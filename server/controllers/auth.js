@@ -24,14 +24,13 @@ const sendVerificationEmail = async (email, otp) => {
     });
 
     if (error) {
-      // ⚡ FIX: Log the entire error object to the terminal to find the exact reason
-      console.error("❌ Resend API Returned Error:", error);
-      throw new Error(error.message || `Resend Error Code: ${error.name}`);
+      console.error("Email send error:", error);
+      throw new CustomError("Failed to send verification email.", 500);
     }
 
     return data;
   } catch (error) {
-    console.error("❌ sendVerificationEmail Exception:", error.message);
+    console.error("Email error:", error.message);
     throw new CustomError("Failed to send verification email.", 500);
   }
 };

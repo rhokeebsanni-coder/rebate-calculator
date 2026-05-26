@@ -7,7 +7,6 @@ const VerifyOTP = ({ email, onVerificationSuccess, onCancel }) => {
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [password, setPassword] = useState(""); // Store password for auto-login
 
   useEffect(() => {
     if (timer <= 0) return;
