@@ -10,6 +10,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [requiresVerification, setRequiresVerification] = useState(false);
 
@@ -18,16 +19,14 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccessMsg("");
     setIsLoading(true);
 
     try {
       const response = await API.post("/auth/login", { email, password });
-      
+
       if (response.data?.requiresVerification) {
         setRequiresVerification(true);
-        if (response.data.message) {
-          setError(response.data.message);
-        }
       } else {
         localStorage.setItem("token", response.data.token);
         navigate("/", { replace: true });
@@ -46,7 +45,7 @@ const Login = () => {
           email={email}
           onVerificationSuccess={() => {
             setRequiresVerification(false);
-            setError("Account verified! Sign in again.");
+            setSuccessMsg("Account verified! Please sign in.");
           }}
           onCancel={() => setRequiresVerification(false)}
         />
@@ -81,6 +80,23 @@ const Login = () => {
               />
             </svg>
             <span>{error}</span>
+          </div>
+        )}
+
+        {successMsg && (
+          <div
+            style={{
+              backgroundColor: "#f0fdf4",
+              border: "1px solid #86efac",
+              color: "#16a34a",
+              padding: "0.75rem 1rem",
+              borderRadius: "0.375rem",
+              fontSize: "0.875rem",
+              marginBottom: "1rem",
+              textAlign: "center",
+            }}
+          >
+            ✅ {successMsg}
           </div>
         )}
 

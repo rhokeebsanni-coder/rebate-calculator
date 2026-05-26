@@ -54,6 +54,9 @@ const UserSchema = new mongoose.Schema(
     otpExpiresAt: {
       type: Date,
     },
+    otpSentAt: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
@@ -62,11 +65,9 @@ const UserSchema = new mongoose.Schema(
   },
 );
 
-// Indexes
 UserSchema.index({ email: 1, googleId: 1 });
 UserSchema.index({ createdAt: -1 });
 
-// Hash password before save
 UserSchema.pre("save", async function () {
   if (this.googleId === "") {
     this.googleId = undefined;
@@ -75,6 +76,11 @@ UserSchema.pre("save", async function () {
   if (!this.isModified("password") || !this.password) {
     return;
   }
+
+  // Password is already hashed in register.js and login.js — skip double hashing
+  const isAlreadyHashed =
+    this.password.startsWith("$2b$") || this.password.startsWith("$2a$");
+  if (isAlreadyHashed) return;
 
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);

@@ -12,9 +12,16 @@ const googleLogin = async (req, res) => {
     throw new CustomError("No credential token provided.", 400);
   }
 
-  const ticket = await client.verifyIdToken({ idToken: credential });
-  const payload = ticket.getPayload();
-  const { sub, email, name, picture } = payload;
+  let payload;
+  try {
+    const ticket = await client.verifyIdToken({ idToken: credential });
+    payload = ticket.getPayload();
+  } catch {
+    throw new CustomError("Invalid or expired Google token.", 401);
+  }
+
+  const { sub, name, picture } = payload;
+  const email = payload.email?.trim().toLowerCase();
 
   if (!sub || !email) {
     throw new CustomError("Invalid Google token.", 401);
@@ -26,15 +33,21 @@ const googleLogin = async (req, res) => {
     user = await User.findOne({ email });
 
     if (user) {
-      // Link Google to existing account
+      if (!user.isActive)
+        throw new CustomError("Account has been deactivated.", 403);
       user.googleId = sub;
       user.isVerified = true;
       if (!user.image) user.image = picture;
       await user.save();
     } else {
-      // Create new Google user
+      const baseUsername = name || email.split("@")[0];
+      const existingUsername = await User.findOne({ username: baseUsername });
+      const username = existingUsername
+        ? `${baseUsername}_${Date.now()}`
+        : baseUsername;
+
       user = await User.create({
-        username: name || email.split("@")[0],
+        username,
         email,
         googleId: sub,
         image:
@@ -49,21 +62,13 @@ const googleLogin = async (req, res) => {
     throw new CustomError("Account has been deactivated.", 403);
   }
 
-  // Generate token and return it
-  const token = jwt.sign(
-    {
-      userId: user._id,
-      username: user.username,
-      email: user.email,
-      image: user.image,
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: "1d" },
-  );
+  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
 
   res.status(200).json({
     success: true,
-    token, // ✅ RETURN TOKEN
+    token,
     user: {
       id: user._id,
       username: user.username,

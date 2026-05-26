@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api/products";
+import HomeSkeleton from "../components/HomeSkeleton";
 
 const Home = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -12,6 +13,7 @@ const Home = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
   const [user, setUser] = useState({
     username: "Guest",
@@ -61,7 +63,11 @@ const Home = () => {
             setHistory(results[2].value.data?.snapshots || []);
           }
 
-          await savePendingMaterials(results[1].value.data?.materials || []);
+          await savePendingMaterials(
+            results[1].status === "fulfilled"
+              ? results[1].value.data?.materials || []
+              : [],
+          );
         } else {
           setIsAuthenticated(false);
           const savedSkus = localStorage.getItem("guestSkus");
@@ -73,6 +79,7 @@ const Home = () => {
         console.error("Failed to fetch data:", err);
       } finally {
         setIsLoading(false);
+        setHasInitialized(true);
       }
     };
 
@@ -116,6 +123,11 @@ const Home = () => {
       console.error("Failed to save pending materials:", err);
     }
   };
+
+  // Show skeleton while loading
+  if (isLoading && !hasInitialized) {
+    return <HomeSkeleton />;
+  }
 
   const netTotal = grossTotal - (grossTotal * rebate) / 100;
 

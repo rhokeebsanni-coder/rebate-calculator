@@ -1,4 +1,5 @@
 const { Resend } = require("resend");
+const bcrypt = require("bcryptjs");
 const User = require("../models/users.js");
 const CustomError = require("../errors/custom-error");
 
@@ -30,13 +31,14 @@ const sendVerificationEmail = async (email, otp) => {
 
     return data;
   } catch (error) {
-    console.error("Email error:", error.message);
+    console.error("Email error:", error); // full error, not just message
     throw new CustomError("Failed to send verification email.", 500);
   }
 };
 
 const verifyEmail = async (req, res) => {
-  const { email, otp } = req.body;
+  const email = req.body.email?.trim().toLowerCase();
+  const { otp } = req.body;
 
   if (!email || !otp) {
     throw new CustomError("Email and OTP required.", 400);
@@ -51,24 +53,25 @@ const verifyEmail = async (req, res) => {
       .json({ success: true, message: "Already verified." });
   }
 
-  if (
-    !user.verificationOTP ||
-    user.verificationOTP !== otp ||
-    Date.now() > user.otpExpiresAt
-  ) {
+  const isMatch = user.verificationOTP
+    ? await bcrypt.compare(otp, user.verificationOTP)
+    : false;
+
+  if (!isMatch || Date.now() > user.otpExpiresAt) {
     throw new CustomError("Invalid or expired code.", 400);
   }
 
   user.isVerified = true;
   user.verificationOTP = undefined;
   user.otpExpiresAt = undefined;
+  user.otpSentAt = undefined;
   await user.save();
 
   res.status(200).json({ success: true, message: "Verification successful." });
 };
 
 const resendOTP = async (req, res) => {
-  const { email } = req.body;
+  const email = req.body.email?.trim().toLowerCase();
 
   if (!email) {
     throw new CustomError("Email required.", 400);
@@ -77,16 +80,20 @@ const resendOTP = async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) throw new CustomError("Account not found.", 404);
 
-  if (user.otpExpiresAt && Date.now() < user.otpExpiresAt - 14 * 60 * 1000) {
+  // Use a dedicated otpSentAt field for rate limiting — more reliable
+  if (user.otpSentAt && Date.now() < user.otpSentAt + 60 * 1000) {
     throw new CustomError("Please wait 1 minute before resending.", 429);
   }
 
   const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
 
+  // Send email first — only save if it succeeds
   await sendVerificationEmail(user.email, newOtp);
 
-  user.verificationOTP = newOtp;
+  const hashedOtp = await bcrypt.hash(newOtp, 10);
+  user.verificationOTP = hashedOtp;
   user.otpExpiresAt = Date.now() + 15 * 60 * 1000;
+  user.otpSentAt = Date.now();
   await user.save();
 
   res.status(200).json({ success: true, message: "Verification code sent." });

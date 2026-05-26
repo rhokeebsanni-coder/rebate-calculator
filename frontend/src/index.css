@@ -556,9 +556,9 @@
   padding: 1rem 1.5rem;
   border-top: 1px solid #e5e5e5;
   background-color: rgba(245, 245, 245, 0.8);
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
 }
 
 .account-avatar {
@@ -604,14 +604,7 @@
   background-color: #f59e0b;
   margin-right: 0.375rem;
 }
-/* --- ACCOUNT WIDGET HOVER MECHANICS --- */
-.account-widget {
-  position: relative; /* Anchor layer for absolute positioning */
-  display: inline-block;
-  cursor: pointer;
-}
 
-/* Internal layout frame */
 .account-profile-trigger {
   display: flex;
   align-items: center;
@@ -621,7 +614,6 @@
   transition: background-color 0.15s ease-in-out;
 }
 
-/* Caret movement detail */
 .account-caret-icon {
   color: #a3a3a3;
   margin-left: auto;
@@ -640,7 +632,7 @@
 /* --- DROPDOWN CONTEXT FLYOUT --- */
 .account-dropdown {
   position: absolute;
-  bottom: 115%; /* Mounts menu cleanly directly above the avatar row widget */
+  bottom: 115%;
   left: 0;
   width: 240px;
   background-color: #ffffff;
@@ -650,15 +642,12 @@
   padding: 0.35rem;
   box-sizing: border-box;
   z-index: 100;
-  
-  /* Modern CSS transition hidden parameters (prevents layout snap) */
   opacity: 0;
   visibility: hidden;
   transform: translateY(6px);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Safe Hover Zone Bridge to keep window open natively */
 .account-dropdown::after {
   content: '';
   position: absolute;
@@ -668,7 +657,6 @@
   height: 20px;
 }
 
-/* TRIGGER STATE */
 .account-widget:hover .account-dropdown {
   opacity: 1;
   visibility: visible;
@@ -708,216 +696,18 @@
   font-size: 0.7rem;
 }
 
-/* Hover Treatment Row Interactions */
 .dropdown-item:hover {
   background-color: #fafafa;
 }
 
-/* Premium micro-alert tone specifically for the donation channel */
 .dropdown-item.donation-highlight:hover {
-  background-color: #fffbeb; /* Gentle coffee-themed warm glow amber */
+  background-color: #fffbeb;
 }
 
 .dropdown-item.donation-highlight:hover .dropdown-item-title {
   color: #b45309;
 }
-/* ==========================================
-   --- MOBILE DEVICING OPTIMIZATIONS ---
-   ========================================== */
-@media (max-width: 767px) {
-  /* --- APP CONTAINER RESPONSIVENESS --- */
-  .workspace-panel {
-    padding: 1rem; /* Condense wide padding on small screens */
-  }
 
-  .workspace-panel > * + * {
-    margin-top: 1rem; /* Pull layout components tighter together */
-  }
-
-  /* --- HEADER SYSTEM REMODEL --- */
-  .app-header {
-    padding: 0.75rem 1rem;
-  }
-
-  .header-title {
-    font-size: 1.1rem; /* Scale down title typography */
-  }
-
-  .nav-actions {
-    gap: 0.5rem; /* Tighten up spacing around sign-in mechanics */
-  }
-
-  .btn-signup {
-    padding: 0.4rem 0.75rem;
-    font-size: 0.8rem;
-  }
-
-  /* --- FINANCIAL CARD COMPONENT --- */
-  .parameter-card {
-    padding: 1rem;
-  }
-
-  .parameter-grid {
-    gap: 1rem; /* Re-align grid metrics sequentially vertically */
-  }
-
-  .financial-input {
-    font-size: 1rem;
-    padding: 0.5rem 0.75rem;
-  }
-
-  /* --- LEDGER SYSTEM & RESPONSIVE DATA TABLE --- */
-  .ledger-header {
-    padding: 0.75rem 1rem;
-    flex-direction: column; /* Stack ledger titles vertically on phones */
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-
-  .ledger-actions {
-    width: 100%; /* Stretch control buttons to full-width targets */
-  }
-
-  .ledger-actions > button {
-    flex: 1;
-    text-align: center;
-    padding: 0.6rem; /* Make tap targets friendly for fingers */
-  }
-
-  /* Table Cell Matrix Adjustments */
-  .matrix-table th, 
-  .matrix-table td {
-    padding: 0.6rem 0.75rem; /* Prevent massive cell padding blowouts */
-  }
-
-  /* Force display delete buttons natively since phone screens don't support mouse :hover states */
-  .table-body-row .btn-delete {
-    opacity: 1;
-  }
-
-  /* --- SLIDEOUT SIDEBAR Drawer Matrix System --- */
-  .app-sidebar {
-    width: 85vw; /* Expand drawer to cover most of the view matrix */
-    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15); /* Soft background block drop */
-    z-index: 1000;
-  }
-
-  .sidebar-open {
-    width: 85vw;
-  }
-
-  /* --- DROPDOWN CONTEXT FLYOUT REMAP --- */
-  .account-dropdown {
-    bottom: auto;
-    top: 105%; /* Flip positioning downwards on mobile to keep everything on-screen */
-    left: auto;
-    right: 0; /* Align perfectly against the edge container limits */
-    width: 260px;
-  }
-}/* ==========================================
-   --- MOBILE DEVICING OPTIMIZATIONS ---
-   ========================================== */
-@media (max-width: 767px) {
-  /* --- APP CONTAINER RESPONSIVENESS --- */
-  .workspace-panel {
-    padding: 1rem; /* Condense wide padding on small screens */
-  }
-
-  .workspace-panel > * + * {
-    margin-top: 1rem; /* Pull layout components tighter together */
-  }
-
-  /* --- HEADER SYSTEM REMODEL --- */
-  .app-header {
-    padding: 0.75rem 1rem;
-  }
-
-  .header-title {
-    font-size: 1.1rem; /* Scale down title typography */
-  }
-
-  .nav-actions {
-    gap: 0.5rem; /* Tighten up spacing around sign-in mechanics */
-  }
-
-  .btn-signup {
-    padding: 0.4rem 0.75rem;
-    font-size: 0.8rem;
-  }
-
-  /* --- FINANCIAL CARD COMPONENT --- */
-  .parameter-card {
-    padding: 1rem;
-  }
-
-  .parameter-grid {
-    gap: 1rem; /* Re-align grid metrics sequentially vertically */
-  }
-
-  .financial-input {
-    font-size: 1rem;
-    padding: 0.5rem 0.75rem;
-  }
-
-  /* --- LEDGER SYSTEM & RESPONSIVE DATA TABLE --- */
-  .ledger-header {
-    padding: 0.75rem 1rem;
-    flex-direction: column; /* Stack ledger titles vertically on phones */
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-
-  .ledger-actions {
-    width: 100%; /* Stretch control buttons to full-width targets */
-  }
-
-  .ledger-actions > button {
-    flex: 1;
-    text-align: center;
-    padding: 0.6rem; /* Make tap targets friendly for fingers */
-  }
-
-  /* Table Cell Matrix Adjustments */
-  .matrix-table th, 
-  .matrix-table td {
-    padding: 0.6rem 0.75rem; /* Prevent massive cell padding blowouts */
-  }
-
-  /* Force display delete buttons natively since phone screens don't support mouse :hover states */
-  .table-body-row .btn-delete {
-    opacity: 1;
-  }
-
-  /* --- SLIDEOUT SIDEBAR Drawer Matrix System --- */
-  .app-sidebar {
-    width: 85vw; /* Expand drawer to cover most of the view matrix */
-    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15); /* Soft background block drop */
-  }
-
-  .sidebar-open {
-    width: 85vw;
-  }
-
-  /* --- DROPDOWN CONTEXT FLYOUT REMAP --- */
-  .account-dropdown {
-    bottom: auto;
-    top: 105%; /* Flip positioning downwards on mobile to keep everything on-screen */
-    left: auto;
-    right: 0; /* Align perfectly against the edge container limits */
-    width: 260px;
-  }
-}
-@media (min-width: 768px) {
-  .sidebar-overlay {
-    display: none !important;
-  }
-}
-
-@media (max-width: 767px) {
-  .sidebar-overlay {
-    display: block !important;
-  }
-}
 /* --- SIDEBAR OVERLAY --- */
 .sidebar-overlay {
   position: fixed;
@@ -932,12 +722,8 @@
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @media (min-width: 768px) {
@@ -968,4 +754,89 @@
 
 .logout-highlight:hover .dropdown-item-title {
   color: #b91c1c;
+}
+
+/* --- MOBILE OPTIMIZATIONS --- */
+@media (max-width: 767px) {
+  .workspace-panel {
+    padding: 1rem;
+  }
+
+  .workspace-panel > * + * {
+    margin-top: 1rem;
+  }
+
+  .app-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .header-title {
+    font-size: 1.1rem;
+  }
+
+  .nav-actions {
+    gap: 0.5rem;
+  }
+
+  .btn-signup {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .parameter-card {
+    padding: 1rem;
+  }
+
+  .parameter-grid {
+    gap: 1rem;
+  }
+
+  .financial-input {
+    font-size: 1rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .ledger-header {
+    padding: 0.75rem 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .ledger-actions {
+    width: 100%;
+  }
+
+  .ledger-actions > button {
+    flex: 1;
+    text-align: center;
+    padding: 0.6rem;
+  }
+
+  .matrix-table th,
+  .matrix-table td {
+    padding: 0.6rem 0.75rem;
+  }
+
+  .table-body-row .btn-delete {
+    opacity: 1;
+  }
+
+  .app-sidebar {
+    width: 85vw;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+  }
+
+  .sidebar-open {
+    width: 85vw;
+  }
+
+  .account-dropdown {
+    bottom: auto;
+    top: 105%;
+    left: auto;
+    right: 0;
+    width: 260px;
+  }
 }

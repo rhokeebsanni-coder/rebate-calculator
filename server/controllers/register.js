@@ -1,14 +1,13 @@
-const jwt = require("jsonwebtoken");
-const crypto = require("crypto");
+const bcrypt = require("bcrypt");
 const User = require("../models/users");
 const CustomError = require("../errors/custom-error");
-// ⚡ DOUBLE CHECK: Make sure this relative path points to your new Resend controller file
 const { sendVerificationEmail } = require("./auth.js");
 
 const register = async (req, res) => {
-  const { email, username, password, confirmPassword } = req.body;
+  const email = req.body.email?.trim().toLowerCase();
+  const username = req.body.username?.trim();
+  const { password, confirmPassword } = req.body;
 
-  // Validation
   if (!email || !username || !password || !confirmPassword) {
     throw new CustomError("Please complete all required fields.", 400);
   }
@@ -21,12 +20,11 @@ const register = async (req, res) => {
     throw new CustomError("Password must be at least 8 characters.", 400);
   }
 
-  // Check for existing user
   const existingUser = await User.findOne({ email });
 
   if (existingUser) {
     if (!existingUser.password) {
-      existingUser.password = password;
+      existingUser.password = await bcrypt.hash(password, 10);
       existingUser.username = username;
       existingUser.isVerified = true;
       await existingUser.save();
@@ -41,27 +39,26 @@ const register = async (req, res) => {
     throw new CustomError("Email already registered.", 409);
   }
 
-  // ⚡ FIX: Generate a 6-digit pure numeric code to remain 100% consistent with resendOTP
   const verificationOTP = Math.floor(
     100000 + Math.random() * 900000,
   ).toString();
+  const hashedOtp = await bcrypt.hash(verificationOTP, 10);
   const otpExpiresAt = Date.now() + 15 * 60 * 1000;
+  const otpSentAt = Date.now();
 
-  // Create user
   const user = await User.create({
     email,
     username,
     password,
     isVerified: false,
-    verificationOTP,
+    verificationOTP: hashedOtp,
     otpExpiresAt,
+    otpSentAt,
   });
 
-  // Send email using Resend API pipeline
   try {
     await sendVerificationEmail(user.email, verificationOTP);
   } catch (mailError) {
-    // Clean rollback strategy: purges locked user record on email network failure
     await User.deleteOne({ _id: user._id });
     throw new CustomError("Failed to send verification email.", 500);
   }
