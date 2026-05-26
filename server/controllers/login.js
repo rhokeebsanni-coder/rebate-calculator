@@ -25,10 +25,8 @@ const login = async (req, res) => {
   }
 
   if (!user.isVerified) {
-    const verificationOTP = Math.floor(
-      100000 + Math.random() * 900000,
-    ).toString();
-
+    const verificationOTP = Math.floor(100000 + Math.random() * 900000).toString();
+    
     await sendVerificationEmail(user.email, verificationOTP);
 
     user.verificationOTP = verificationOTP;
@@ -39,8 +37,7 @@ const login = async (req, res) => {
       success: true,
       requiresVerification: true,
       email: user.email,
-      message:
-        "Profile verification required before access. A new verification code has been sent.",
+      message: "Profile verification required before access. A new verification code has been sent.",
     });
   }
 

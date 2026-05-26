@@ -22,7 +22,7 @@ const Login = () => {
 
     try {
       const response = await API.post("/auth/login", { email, password });
-
+      
       if (response.data?.requiresVerification) {
         setRequiresVerification(true);
         if (response.data.message) {
