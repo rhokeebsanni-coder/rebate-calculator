@@ -171,7 +171,6 @@ const Login = () => {
 
         <div className="google-btn-wrapper">
           <GoogleSignIn
-            text="signin_with"
             onSuccess={async (credentialResponse) => {
               try {
                 const response = await API.post("/auth/google", {

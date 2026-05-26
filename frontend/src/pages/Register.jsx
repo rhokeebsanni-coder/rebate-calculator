@@ -195,7 +195,6 @@ const Register = () => {
 
         <div className="register-google-btn-wrapper">
           <GoogleSignIn
-            text="signup_with"
             onSuccess={async (credentialResponse) => {
               try {
                 const response = await API.post("/auth/google", {
@@ -205,11 +204,11 @@ const Register = () => {
                 navigate("/", { replace: true });
               } catch (error) {
                 setError(
-                  error.response?.data?.message || "Google sign-up failed.",
+                  error.response?.data?.message || "Google sign-in failed.",
                 );
               }
             }}
-            onError={() => setError("Google sign-up failed.")}
+            onError={() => setError("Google sign-in failed.")}
           />
         </div>
 

@@ -24,8 +24,8 @@ const sendVerificationEmail = async (email, otp) => {
     });
 
     if (error) {
-      console.error("Email send error:", error);
-      throw new CustomError("Failed to send verification email.", 500);
+      console.error("Full Resend error:", JSON.stringify(error, null, 2));
+      throw new CustomError(`Email failed: ${error.message}`, 500);
     }
 
     return data;

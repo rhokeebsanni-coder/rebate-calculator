@@ -19,15 +19,17 @@ const GoogleSignIn = ({ onSuccess, onError, text = "signin_with" }) => {
   }
 
   return (
-    <GoogleLogin
-      onSuccess={onSuccess}
-      onError={onError}
-      theme="outline"
-      shape="rectangular"
-      size="large"
-      text={text}
-      width="100%"
-    />
+    <div style={{ display: "flex", justifyContent: "center" }}>
+      <GoogleLogin
+        onSuccess={onSuccess}
+        onError={onError}
+        theme="outline"
+        shape="rectangular"
+        size="large"
+        text={text}
+        width="100%"
+      />
+    </div>
   );
 };
 
