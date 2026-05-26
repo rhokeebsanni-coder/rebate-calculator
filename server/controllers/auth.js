@@ -1,27 +1,21 @@
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 const User = require("../models/users.js");
 const CustomError = require("../errors/custom-error");
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
-
-transporter.verify((error) => {
-  if (error) {
-    console.error("Email config failed:", error.message);
-  } else {
-    console.log("Email service ready");
-  }
-});
+// Initialize Resend with your API Key
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendVerificationEmail = async (email, otp) => {
   try {
-    const result = await transporter.sendMail({
-      from: `"Verification" <${process.env.EMAIL_USER}>`,
+    // ⚡ NOTE: If using a free Resend tier without a custom domain verified,
+    // you MUST use "onboarding@resend.dev" as the sender address.
+    const sender =
+      process.env.NODE_ENV === "production" && process.env.VERIFIED_EMAIL_FROM
+        ? process.env.VERIFIED_EMAIL_FROM
+        : "Verification <onboarding@resend.dev>";
+
+    const { data, error } = await resend.emails.send({
+      from: sender,
       to: email,
       subject: "Verify Your Email",
       html: `<div style="font-family:sans-serif; padding:20px; border:1px solid #7a5e3e;">
@@ -31,9 +25,14 @@ const sendVerificationEmail = async (email, otp) => {
               <p>Code expires in 15 minutes.</p>
              </div>`,
     });
-    return result;
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return data;
   } catch (error) {
-    console.error("Email failed:", error.message);
+    console.error("❌ Resend API Error:", error.message);
     throw new CustomError("Failed to send verification email.", 500);
   }
 };
@@ -80,16 +79,21 @@ const resendOTP = async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) throw new CustomError("Account not found.", 404);
 
+  // Rate limit: 1 minute cooldown
   if (user.otpExpiresAt && Date.now() < user.otpExpiresAt - 14 * 60 * 1000) {
     throw new CustomError("Please wait 1 minute before resending.", 429);
   }
 
   const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  // ⚡ FIX: Fire email payload first. If the API drops or errors out,
+  // database mutations are aborted cleanly and your user retains access.
+  await sendVerificationEmail(user.email, newOtp);
+
   user.verificationOTP = newOtp;
   user.otpExpiresAt = Date.now() + 15 * 60 * 1000;
   await user.save();
 
-  await sendVerificationEmail(user.email, newOtp);
   res.status(200).json({ success: true, message: "Verification code sent." });
 };
 
