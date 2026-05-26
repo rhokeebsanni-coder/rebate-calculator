@@ -840,15 +840,3 @@
     width: 260px;
   }
 }
-.google-btn-wrapper {
-  width: 100%;
-  margin-top: 1rem;
-  /* Remove any borders, backgrounds, or padding here */
-}
-
-/* If you want to center it or make sure the iframe fills the space */
-.google-btn-wrapper > div {
-  width: 100% !important;
-  display: flex;
-  justify-content: center;
-}
