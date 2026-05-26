@@ -5,8 +5,8 @@ import API from "../api/products";
 const Home = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [skus, setSkus] = useState([]);
-  const [grossTotal, setGrossTotal] = useState(5500000);
-  const [rebate, setRebate] = useState(17);
+  const [grossTotal, setGrossTotal] = useState();
+  const [rebate, setRebate] = useState();
   const [history, setHistory] = useState([]);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);

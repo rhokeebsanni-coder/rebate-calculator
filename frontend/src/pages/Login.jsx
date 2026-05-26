@@ -22,17 +22,18 @@ const Login = () => {
 
     try {
       const response = await API.post("/auth/login", { email, password });
-      localStorage.setItem("token", response.data.token);
-      navigate("/", { replace: true });
-    } catch (error) {
-      if (
-        error.response?.status === 403 &&
-        error.response?.data?.requiresVerification
-      ) {
+
+      if (response.data?.requiresVerification) {
         setRequiresVerification(true);
+        if (response.data.message) {
+          setError(response.data.message);
+        }
       } else {
-        setError(error.response?.data?.message || "Invalid email or password.");
+        localStorage.setItem("token", response.data.token);
+        navigate("/", { replace: true });
       }
+    } catch (error) {
+      setError(error.response?.data?.message || "Invalid email or password.");
     } finally {
       setIsLoading(false);
     }

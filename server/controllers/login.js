@@ -2,16 +2,15 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/users.js");
 const CustomError = require("../errors/custom-error");
+const { sendVerificationEmail } = require("./auth.js");
 
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-  // Validate input
   if (!email || !password) {
     throw new CustomError("Please enter all fields.", 400);
   }
 
-  // Find active user and fetch password hash
   const user = await User.findOne({ email, isActive: true }).select(
     "+password",
   );
@@ -20,18 +19,31 @@ const login = async (req, res) => {
     throw new CustomError("Invalid credentials.", 400);
   }
 
-  // Verify password
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     throw new CustomError("Invalid credentials.", 400);
   }
 
-  // Check if verified
   if (!user.isVerified) {
-    throw new CustomError("Profile verification required before access.", 403);
+    const verificationOTP = Math.floor(
+      100000 + Math.random() * 900000,
+    ).toString();
+
+    await sendVerificationEmail(user.email, verificationOTP);
+
+    user.verificationOTP = verificationOTP;
+    user.otpExpiresAt = Date.now() + 15 * 60 * 1000;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      requiresVerification: true,
+      email: user.email,
+      message:
+        "Profile verification required before access. A new verification code has been sent.",
+    });
   }
 
-  // Generate token
   const token = jwt.sign(
     {
       userId: user._id,
@@ -45,6 +57,7 @@ const login = async (req, res) => {
 
   res.status(200).json({
     success: true,
+    requiresVerification: false,
     token,
     user: {
       id: user._id,
