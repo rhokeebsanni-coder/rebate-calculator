@@ -26,11 +26,9 @@ const GoogleSignIn = ({ onSuccess, onError }) => {
       onError={onError}
       useOneTap={false}
       theme="outline"
-      size="large"
-      text="signin_with" // Options: "signin_with", "signup_with", "continue_with"
-      shape="rectangular" // Matches your crisp input box styling
-      width="100%" // Forces the inner iframe button to expand completely
-      logo_alignment="left"
+      shape="pill" 
+      size="large" 
+      width="320px"
       render={(renderProps) => (
         <button
           onClick={renderProps.onClick}
