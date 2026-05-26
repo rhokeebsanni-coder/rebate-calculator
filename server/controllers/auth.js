@@ -7,18 +7,24 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendVerificationEmail = async (email, otp) => {
   try {
+    // 1. Logic for the SENDER
     const sender =
       process.env.NODE_ENV === "production" && process.env.VERIFIED_EMAIL_FROM
         ? process.env.VERIFIED_EMAIL_FROM
         : "Verification <onboarding@resend.dev>";
 
+    // 2. Logic for the RECIPIENT (The Sandbox Bypass)
+    // If in production, send to the actual user. If in dev, route it to your TEST_EMAIL.
+    const recipient =
+      process.env.NODE_ENV === "production" ? email : process.env.TEST_EMAIL;
+
     const { data, error } = await resend.emails.send({
       from: sender,
-      to: email,
+      to: recipient,
       subject: "Verify Your Email",
       html: `<div style="font-family:sans-serif; padding:20px; border:1px solid #7a5e3e;">
               <h2>Verification Code</h2>
-              <p>Use this code to verify your email:</p>
+              <p>Use this code to verify your account (Local Test Mode routed to: ${email}):</p>
               <h1 style="letter-spacing:4px; color:#7a5e3e;">${otp}</h1>
               <p>Code expires in 15 minutes.</p>
              </div>`,
@@ -26,13 +32,18 @@ const sendVerificationEmail = async (email, otp) => {
 
     if (error) {
       console.error("Full Resend error:", JSON.stringify(error, null, 2));
-      throw new CustomError(`Email failed: ${error.message}`, 500);
+      // Throw a standard Error here so the catch block can read the exact message
+      throw new Error(error.message);
     }
 
     return data;
   } catch (error) {
-    console.error("Email error:", error); // full error, not just message
-    throw new CustomError("Failed to send verification email.", 500);
+    console.error("Email error:", error.message || error);
+    // Pass the actual error message to the frontend so you aren't left guessing
+    throw new CustomError(
+      `Email failed: ${error.message || "Unknown error"}`,
+      500,
+    );
   }
 };
 

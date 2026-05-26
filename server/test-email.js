@@ -1,35 +1,41 @@
-// Quick test to verify Gmail credentials work
+// Quick test to verify Resend works
 require("dotenv").config();
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function testEmail() {
-  console.log("Testing Gmail setup...");
-  console.log("EMAIL_USER:", process.env.EMAIL_USER);
-  console.log("EMAIL_PASS length:", process.env.EMAIL_PASS?.length);
+  console.log("Testing Resend setup...");
+  console.log("RESEND_API_KEY exists:", !!process.env.RESEND_API_KEY);
+  console.log("TEST_EMAIL target:", process.env.TEST_EMAIL);
 
   try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    const testResult = await transporter.verify();
-    console.log("✅ Gmail connection verified:", testResult);
-
-    // Send test email
-    const result = await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_USER, // Send to yourself
+    // ⚡ FIX: Removed markdown link syntax "[onboarding@resend.dev](mailto:...)"
+    const response = await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: process.env.TEST_EMAIL,
       subject: "OTP Test Email",
-      text: "This is a test OTP: 123456",
+      html: `
+        <div style="font-family:sans-serif;padding:20px;">
+          <h2>Test Email</h2>
+          <p>This is a test OTP:</p>
+          <h1 style="letter-spacing:4px;">123456</h1>
+        </div>
+      `,
     });
 
-    console.log("✅ Test email sent:", result.messageId);
+    // ⚡ FIX: Cleaned up the broken markdown code block wrapper that was inside your javascript loop
+    console.log("Response received from Resend API:");
+    console.log(JSON.stringify(response, null, 2));
+
+    if (response.error) {
+      console.error("❌ Resend API returned an error:", response.error);
+    } else {
+      console.log("✅ Email sent successfully");
+    }
   } catch (error) {
-    console.error("❌ Error:", error.message);
+    console.error("❌ Exception thrown during execution:");
+    console.error(error);
     process.exit(1);
   }
 }
