@@ -29,6 +29,8 @@ const GoogleSignIn = ({ onSuccess, onError }) => {
       shape="pill" 
       size="large" 
       width="320px"
+      height="120px"
+      alignItems="center"
       render={(renderProps) => (
         <button
           onClick={renderProps.onClick}
