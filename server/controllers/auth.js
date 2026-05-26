@@ -2,13 +2,10 @@ const { Resend } = require("resend");
 const User = require("../models/users.js");
 const CustomError = require("../errors/custom-error");
 
-// Initialize Resend with your API Key
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendVerificationEmail = async (email, otp) => {
   try {
-    // ⚡ NOTE: If using a free Resend tier without a custom domain verified,
-    // you MUST use "onboarding@resend.dev" as the sender address.
     const sender =
       process.env.NODE_ENV === "production" && process.env.VERIFIED_EMAIL_FROM
         ? process.env.VERIFIED_EMAIL_FROM
@@ -27,12 +24,14 @@ const sendVerificationEmail = async (email, otp) => {
     });
 
     if (error) {
-      throw new Error(error.message);
+      // ⚡ FIX: Log the entire error object to the terminal to find the exact reason
+      console.error("❌ Resend API Returned Error:", error);
+      throw new Error(error.message || `Resend Error Code: ${error.name}`);
     }
 
     return data;
   } catch (error) {
-    console.error("❌ Resend API Error:", error.message);
+    console.error("❌ sendVerificationEmail Exception:", error.message);
     throw new CustomError("Failed to send verification email.", 500);
   }
 };
@@ -79,15 +78,12 @@ const resendOTP = async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) throw new CustomError("Account not found.", 404);
 
-  // Rate limit: 1 minute cooldown
   if (user.otpExpiresAt && Date.now() < user.otpExpiresAt - 14 * 60 * 1000) {
     throw new CustomError("Please wait 1 minute before resending.", 429);
   }
 
   const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
 
-  // ⚡ FIX: Fire email payload first. If the API drops or errors out,
-  // database mutations are aborted cleanly and your user retains access.
   await sendVerificationEmail(user.email, newOtp);
 
   user.verificationOTP = newOtp;
