@@ -28,7 +28,6 @@ const Home = () => {
         const token = localStorage.getItem("token");
 
         if (token) {
-          // User is authenticated
           const results = await Promise.allSettled([
             API.get("/auth/me"),
             API.get("/materials"),
@@ -52,7 +51,6 @@ const Home = () => {
           if (results[1].status === "fulfilled") {
             setSkus(results[1].value.data?.materials || []);
           } else {
-            // If materials fetch failed, use guest materials
             const savedSkus = localStorage.getItem("guestSkus");
             if (savedSkus) {
               setSkus(JSON.parse(savedSkus));
@@ -63,10 +61,8 @@ const Home = () => {
             setHistory(results[2].value.data?.snapshots || []);
           }
 
-          // Save pending guest materials on login
           await savePendingMaterials(results[1].value.data?.materials || []);
         } else {
-          // Guest user - load from localStorage
           setIsAuthenticated(false);
           const savedSkus = localStorage.getItem("guestSkus");
           if (savedSkus) {
@@ -83,7 +79,6 @@ const Home = () => {
     fetchData();
   }, []);
 
-  // Save guest materials to localStorage whenever they change
   useEffect(() => {
     if (!isAuthenticated && skus.length > 0) {
       localStorage.setItem("guestSkus", JSON.stringify(skus));
@@ -96,22 +91,18 @@ const Home = () => {
       if (!savedSkus) return;
 
       const guestSkus = JSON.parse(savedSkus);
-      const existingIds = existingMaterials.map((m) => m._id);
 
       for (const sku of guestSkus) {
-        // Skip if already has real _id (already saved)
         if (sku._id && !sku._id.startsWith("guest-")) {
           continue;
         }
 
-        // Create new material
         const response = await API.post("/materials", {
           name: sku.name,
           yieldPerTon: sku.yieldPerTon,
         });
 
         if (response.data?.material) {
-          // Update the local state with the saved material
           setSkus((prev) =>
             prev.map((item) =>
               item._id === sku._id ? response.data.material : item,
@@ -120,7 +111,6 @@ const Home = () => {
         }
       }
 
-      // Clear guest storage after saving
       localStorage.removeItem("guestSkus");
     } catch (err) {
       console.error("Failed to save pending materials:", err);
@@ -239,6 +229,11 @@ const Home = () => {
     }
   };
 
+  const handleSignOut = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/";
+  };
+
   const filteredSkus = skus.filter((item) =>
     (item.name || "").toLowerCase().includes(searchTerm.toLowerCase()),
   );
@@ -276,6 +271,22 @@ const Home = () => {
           >
             {isAuthenticated ? "Logged In" : "Guest Mode"}
           </span>
+          {isAuthenticated && (
+            <button
+              onClick={handleSignOut}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                color: "#666",
+                fontSize: "0.9rem",
+                textDecoration: "underline",
+              }}
+              title="Sign out"
+            >
+              Sign Out
+            </button>
+          )}
         </nav>
       </header>
 
@@ -533,10 +544,7 @@ const Home = () => {
 
                 <div className="account-dropdown">
                   <button
-                    onClick={() => {
-                      localStorage.removeItem("token");
-                      window.location.href = "/";
-                    }}
+                    onClick={handleSignOut}
                     className="dropdown-item logout-highlight"
                     style={{
                       width: "100%",
