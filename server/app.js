@@ -34,7 +34,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://rebate-calculator-amber.vercel.app/",
+      "https://rebate-calculator-amber.vercel.app",
     ],
     credentials: true,
   }),
