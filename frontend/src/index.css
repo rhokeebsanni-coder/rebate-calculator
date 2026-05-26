@@ -906,3 +906,14 @@
     width: 260px;
   }
 }
+@media (min-width: 768px) {
+  .sidebar-overlay {
+    display: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .sidebar-overlay {
+    display: block !important;
+  }
+}
