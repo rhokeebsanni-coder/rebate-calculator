@@ -431,7 +431,7 @@
   height: 100%;
   position: absolute;
   right: 0;
-  z-index: 10;
+  z-index: 9;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
 }
@@ -839,4 +839,16 @@
     right: 0;
     width: 260px;
   }
+}
+.google-btn-wrapper {
+  width: 100%;
+  margin-top: 1rem;
+  /* Remove any borders, backgrounds, or padding here */
+}
+
+/* If you want to center it or make sure the iframe fills the space */
+.google-btn-wrapper > div {
+  width: 100% !important;
+  display: flex;
+  justify-content: center;
 }
