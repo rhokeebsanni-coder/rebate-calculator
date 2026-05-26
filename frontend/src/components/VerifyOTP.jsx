@@ -7,6 +7,7 @@ const VerifyOTP = ({ email, onVerificationSuccess, onCancel }) => {
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [password, setPassword] = useState(""); // Store password for auto-login
 
   useEffect(() => {
     if (timer <= 0) return;
@@ -66,7 +67,6 @@ const VerifyOTP = ({ email, onVerificationSuccess, onCancel }) => {
     setErrorMsg("");
     setSuccessMsg("");
     try {
-      // Adjusted endpoint reference payload targets cleanly
       await API.post("/auth/resend-otp", { email });
       setSuccessMsg("Verification code sent to your email.");
       setTimer(900);
