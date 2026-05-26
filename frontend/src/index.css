@@ -1,0 +1,908 @@
+/* --- APP CONTAINERS --- */
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, sans-serif;
+  margin: 0;
+  background-color: #f5f5f5;
+  color: #262626;
+}
+
+.main-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.workspace-panel {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  background-color: #f5f5f5;
+}
+
+.workspace-panel > * + * {
+  margin-top: 1.5rem;
+}
+
+/* --- HEADER / NAVIGATION --- */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e5e5;
+  z-index: 10;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sidebar-toggle-btn {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  color: #737373;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.sidebar-toggle-btn:hover {
+  background-color: #f5f5f5;
+}
+
+.sidebar-toggle-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.header-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: #171717;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-signin {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #525252;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.btn-signin:hover {
+  color: #171717;
+}
+
+.btn-signup {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #171717;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+}
+
+.btn-signup:hover {
+  background-color: #262626;
+}
+
+.btn-signup:active {
+  transform: scale(0.95);
+}
+
+/* --- FINANCIAL CONTROLLER CARD --- */
+.parameter-card {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+}
+
+.parameter-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: end;
+}
+
+@media (min-width: 768px) {
+  .parameter-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-label {
+  display: block;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #a3a3a3;
+  margin-bottom: 0.5rem;
+}
+
+.financial-input {
+  width: 100%;
+  font-size: 1.125rem;
+  font-weight: 600;
+  padding: 0.625rem 1rem;
+  background-color: #f5f5f5;
+  border: 1px solid #e5e5e5;
+  border-radius: 0.5rem;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.financial-input:focus {
+  border-color: #171717;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 2px #171717;
+}
+
+.net-display-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #171717;
+  color: #ffffff;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .net-display-box {
+    justify-content: flex-end;
+    background-color: transparent;
+    color: #171717;
+    padding: 0;
+  }
+  .net-display-box .text-right-md {
+    text-align: right;
+  }
+}
+
+.net-total-output {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 900;
+  font-family: monospace;
+  letter-spacing: -0.025em;
+  color: #171717;
+}
+
+@media (max-width: 767px) {
+  .net-total-output {
+    color: #ffffff;
+  }
+}
+
+/* --- LEDGER BREAKDOWN MATRIX --- */
+.ledger-container {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.ledger-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f5f5f5;
+  background-color: rgba(245, 245, 245, 0.5);
+}
+
+.ledger-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #171717;
+}
+
+.ledger-subtitle {
+  margin: 0.125rem 0 0 0;
+  font-size: 0.75rem;
+  color: #a3a3a3;
+}
+
+.ledger-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-secondary {
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: #ffffff;
+  border: 1px solid #d4d4d4;
+  color: #404040;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: #f5f5f5;
+}
+
+.btn-primary {
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: #171717;
+  border: none;
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #262626;
+}
+
+.btn-primary:active, .btn-secondary:active {
+  transform: scale(0.95);
+}
+
+/* --- MATRIX TABLE --- */
+.table-responsive {
+  overflow-x: auto;
+}
+
+.matrix-table {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+}
+
+.table-head-row {
+  border-bottom: 2px solid #e5e5e5;
+  background-color: #f5f5f5;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #737373;
+}
+
+.matrix-table th {
+  padding: 0.875rem 1.5rem;
+}
+
+.w-yield { width: 12rem; }
+.w-price { width: 16rem; }
+.w-actions { width: 6rem; text-align: center; }
+
+.table-body-row {
+  border-bottom: 1px solid #f5f5f5;
+  transition: background-color 0.2s;
+}
+
+.table-body-row:hover {
+  background-color: rgba(245, 245, 245, 0.5);
+}
+
+.matrix-table td {
+  padding: 0.75rem 1.5rem;
+}
+
+.cell-input-text {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 0.375rem;
+  background-color: transparent;
+  outline: none;
+  font-weight: 500;
+  color: #262626;
+  transition: all 0.2s;
+}
+
+.cell-input-num {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 0.375rem;
+  background-color: transparent;
+  outline: none;
+  font-family: monospace;
+  color: #404040;
+  transition: all 0.2s;
+}
+
+.table-body-row:hover .cell-input-text,
+.table-body-row:hover .cell-input-num {
+  border-color: #e5e5e5;
+}
+
+.cell-input-text:focus,
+.cell-input-num:focus {
+  border-color: #171717 !important;
+  background-color: #ffffff;
+}
+
+.price-output {
+  font-family: monospace;
+  font-weight: 700;
+  color: #059669;
+  font-size: 1.125rem;
+}
+
+.btn-delete {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #ef4444;
+  background-color: transparent;
+  border: none;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s;
+}
+
+.table-body-row:hover .btn-delete,
+.btn-delete:focus {
+  opacity: 1;
+}
+
+.btn-delete:hover {
+  background-color: #fef2f2;
+  color: #b91c1c;
+}
+
+/* --- EMPTY STATE --- */
+.empty-state-pane {
+  text-align: center;
+  padding: 3rem 0;
+  background-color: #ffffff;
+}
+
+.empty-icon {
+  width: 3rem;
+  height: 3rem;
+  color: #d4d4d4;
+  margin: 0 auto 0.75rem auto;
+}
+
+.empty-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #737373;
+  margin: 0;
+}
+
+.btn-inline-link {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #171717;
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.btn-inline-link:hover {
+  color: #404040;
+}
+
+/* --- SIDEBAR SYSTEM --- */
+.app-sidebar {
+  background-color: #ffffff;
+  border-left: 1px solid #e5e5e5;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  z-index: 20;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .app-sidebar {
+    position: relative;
+    box-shadow: none;
+  }
+}
+
+.sidebar-open {
+  width: 320px;
+  transform: translateX(0);
+}
+
+.sidebar-closed {
+  width: 0;
+  transform: translateX(100%);
+}
+
+@media (min-width: 768px) {
+  .sidebar-closed {
+    width: 0;
+    transform: translateX(0);
+  }
+}
+
+.history-section {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #f5f5f5;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.history-title {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #a3a3a3;
+}
+
+.history-badge {
+  font-size: 0.75rem;
+  font-family: monospace;
+  font-weight: 700;
+  background-color: #f5f5f5;
+  color: #525252;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.history-item {
+  padding: 1rem;
+  background-color: #f5f5f5;
+  border: 1px solid #e5e5e5;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.history-item:hover {
+  border-color: #d4d4d4;
+  background-color: #ffffff;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.history-item-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: #a3a3a3;
+  margin-bottom: 0.25rem;
+}
+
+.history-item-count {
+  font-family: monospace;
+  background-color: rgba(212, 212, 212, 0.6);
+  padding: 0.05rem 0.375rem;
+  border-radius: 0.25rem;
+  color: #404040;
+}
+
+.history-item:hover .history-item-count {
+  background-color: #f5f5f5;
+}
+
+.history-item-amount {
+  font-family: monospace;
+  font-weight: 700;
+  color: #171717;
+  font-size: 1rem;
+}
+
+.no-history-text {
+  color: #a3a3a3;
+  font-size: 0.75rem;
+  text-align: center;
+  margin-top: 3rem;
+  font-style: italic;
+}
+
+/* --- ACCOUNT IDENTITY WIDGET --- */
+.account-widget {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e5e5e5;
+  background-color: rgba(245, 245, 245, 0.8);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.account-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  object-fit: cover;
+  background-color: #d4d4d4;
+}
+
+.account-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.account-name {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #262626;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.account-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: #d97706;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-top: 0.125rem;
+}
+
+.badge-pulse {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background-color: #f59e0b;
+  margin-right: 0.375rem;
+}
+/* --- ACCOUNT WIDGET HOVER MECHANICS --- */
+.account-widget {
+  position: relative; /* Anchor layer for absolute positioning */
+  display: inline-block;
+  cursor: pointer;
+}
+
+/* Internal layout frame */
+.account-profile-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  transition: background-color 0.15s ease-in-out;
+}
+
+/* Caret movement detail */
+.account-caret-icon {
+  color: #a3a3a3;
+  margin-left: auto;
+  transition: transform 0.2s ease;
+}
+
+.account-widget:hover .account-profile-trigger {
+  background-color: #f5f5f5;
+}
+
+.account-widget:hover .account-caret-icon {
+  transform: rotate(180deg);
+  color: #171717;
+}
+
+/* --- DROPDOWN CONTEXT FLYOUT --- */
+.account-dropdown {
+  position: absolute;
+  bottom: 115%; /* Mounts menu cleanly directly above the avatar row widget */
+  left: 0;
+  width: 240px;
+  background-color: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 0.35rem;
+  box-sizing: border-box;
+  z-index: 100;
+  
+  /* Modern CSS transition hidden parameters (prevents layout snap) */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Safe Hover Zone Bridge to keep window open natively */
+.account-dropdown::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  width: 100%;
+  height: 20px;
+}
+
+/* TRIGGER STATE */
+.account-widget:hover .account-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* --- DROPDOWN ITEMS --- */
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color 0.12s ease-in-out;
+}
+
+.dropdown-item-icon {
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.dropdown-item-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.dropdown-item-title {
+  color: #171717;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.dropdown-item-desc {
+  color: #737373;
+  font-size: 0.7rem;
+}
+
+/* Hover Treatment Row Interactions */
+.dropdown-item:hover {
+  background-color: #fafafa;
+}
+
+/* Premium micro-alert tone specifically for the donation channel */
+.dropdown-item.donation-highlight:hover {
+  background-color: #fffbeb; /* Gentle coffee-themed warm glow amber */
+}
+
+.dropdown-item.donation-highlight:hover .dropdown-item-title {
+  color: #b45309;
+}
+/* ==========================================
+   --- MOBILE DEVICING OPTIMIZATIONS ---
+   ========================================== */
+@media (max-width: 767px) {
+  /* --- APP CONTAINER RESPONSIVENESS --- */
+  .workspace-panel {
+    padding: 1rem; /* Condense wide padding on small screens */
+  }
+
+  .workspace-panel > * + * {
+    margin-top: 1rem; /* Pull layout components tighter together */
+  }
+
+  /* --- HEADER SYSTEM REMODEL --- */
+  .app-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .header-title {
+    font-size: 1.1rem; /* Scale down title typography */
+  }
+
+  .nav-actions {
+    gap: 0.5rem; /* Tighten up spacing around sign-in mechanics */
+  }
+
+  .btn-signup {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  /* --- FINANCIAL CARD COMPONENT --- */
+  .parameter-card {
+    padding: 1rem;
+  }
+
+  .parameter-grid {
+    gap: 1rem; /* Re-align grid metrics sequentially vertically */
+  }
+
+  .financial-input {
+    font-size: 1rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  /* --- LEDGER SYSTEM & RESPONSIVE DATA TABLE --- */
+  .ledger-header {
+    padding: 0.75rem 1rem;
+    flex-direction: column; /* Stack ledger titles vertically on phones */
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .ledger-actions {
+    width: 100%; /* Stretch control buttons to full-width targets */
+  }
+
+  .ledger-actions > button {
+    flex: 1;
+    text-align: center;
+    padding: 0.6rem; /* Make tap targets friendly for fingers */
+  }
+
+  /* Table Cell Matrix Adjustments */
+  .matrix-table th, 
+  .matrix-table td {
+    padding: 0.6rem 0.75rem; /* Prevent massive cell padding blowouts */
+  }
+
+  /* Force display delete buttons natively since phone screens don't support mouse :hover states */
+  .table-body-row .btn-delete {
+    opacity: 1;
+  }
+
+  /* --- SLIDEOUT SIDEBAR Drawer Matrix System --- */
+  .app-sidebar {
+    width: 85vw; /* Expand drawer to cover most of the view matrix */
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15); /* Soft background block drop */
+  }
+
+  .sidebar-open {
+    width: 85vw;
+  }
+
+  /* --- DROPDOWN CONTEXT FLYOUT REMAP --- */
+  .account-dropdown {
+    bottom: auto;
+    top: 105%; /* Flip positioning downwards on mobile to keep everything on-screen */
+    left: auto;
+    right: 0; /* Align perfectly against the edge container limits */
+    width: 260px;
+  }
+}/* ==========================================
+   --- MOBILE DEVICING OPTIMIZATIONS ---
+   ========================================== */
+@media (max-width: 767px) {
+  /* --- APP CONTAINER RESPONSIVENESS --- */
+  .workspace-panel {
+    padding: 1rem; /* Condense wide padding on small screens */
+  }
+
+  .workspace-panel > * + * {
+    margin-top: 1rem; /* Pull layout components tighter together */
+  }
+
+  /* --- HEADER SYSTEM REMODEL --- */
+  .app-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .header-title {
+    font-size: 1.1rem; /* Scale down title typography */
+  }
+
+  .nav-actions {
+    gap: 0.5rem; /* Tighten up spacing around sign-in mechanics */
+  }
+
+  .btn-signup {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  /* --- FINANCIAL CARD COMPONENT --- */
+  .parameter-card {
+    padding: 1rem;
+  }
+
+  .parameter-grid {
+    gap: 1rem; /* Re-align grid metrics sequentially vertically */
+  }
+
+  .financial-input {
+    font-size: 1rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  /* --- LEDGER SYSTEM & RESPONSIVE DATA TABLE --- */
+  .ledger-header {
+    padding: 0.75rem 1rem;
+    flex-direction: column; /* Stack ledger titles vertically on phones */
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .ledger-actions {
+    width: 100%; /* Stretch control buttons to full-width targets */
+  }
+
+  .ledger-actions > button {
+    flex: 1;
+    text-align: center;
+    padding: 0.6rem; /* Make tap targets friendly for fingers */
+  }
+
+  /* Table Cell Matrix Adjustments */
+  .matrix-table th, 
+  .matrix-table td {
+    padding: 0.6rem 0.75rem; /* Prevent massive cell padding blowouts */
+  }
+
+  /* Force display delete buttons natively since phone screens don't support mouse :hover states */
+  .table-body-row .btn-delete {
+    opacity: 1;
+  }
+
+  /* --- SLIDEOUT SIDEBAR Drawer Matrix System --- */
+  .app-sidebar {
+    width: 85vw; /* Expand drawer to cover most of the view matrix */
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15); /* Soft background block drop */
+  }
+
+  .sidebar-open {
+    width: 85vw;
+  }
+
+  /* --- DROPDOWN CONTEXT FLYOUT REMAP --- */
+  .account-dropdown {
+    bottom: auto;
+    top: 105%; /* Flip positioning downwards on mobile to keep everything on-screen */
+    left: auto;
+    right: 0; /* Align perfectly against the edge container limits */
+    width: 260px;
+  }
+}

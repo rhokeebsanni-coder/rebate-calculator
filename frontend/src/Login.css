@@ -1,0 +1,342 @@
+/* --- VIEWPORT ROOT LAYOUT --- */
+.auth-viewport {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: #f9fafb;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  box-sizing: border-box;
+  padding: 1.5rem;
+}
+
+/* --- STRUCTURE CARD CONTAINER --- */
+.auth-card-frame {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.875rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem 2rem;
+  box-sizing: border-box;
+}
+
+/* --- TEXT HEADER LOGICAL DESIGN --- */
+.auth-header-block {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.auth-main-title {
+  color: #111827;
+  font-size: 1.625rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin: 0 0 0.5rem 0;
+}
+
+.auth-sub-title {
+  color: #6b7280;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* --- ERROR DISPATCH BANNER --- */
+.auth-alert-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  background-color: #fef2f2;
+  border: 1px solid #fee2e2;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  color: #991b1b;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  animation: slideDownFade 0.25s ease-out;
+}
+
+.alert-banner-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+  color: #ef4444;
+}
+
+/* --- COMPONENT INPUT STRUCTURAL FIELDS --- */
+.auth-core-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.auth-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.auth-field-label {
+  color: #374151;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.input-positional-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.auth-field-input {
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+  color: #1f2937;
+  font-size: 0.9375rem;
+  padding: 0.625rem 0.875rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.15s ease-in-out;
+}
+
+.auth-field-input::placeholder {
+  color: #9ca3af;
+}
+
+/* Focus and Active Treatment States */
+.auth-field-input:focus {
+  border-color: #111827;
+  box-shadow: 0 0 0 2.5px rgba(17, 24, 39, 0.08);
+}
+
+.auth-field-input:disabled {
+  background-color: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.password-input-padding {
+  padding-right: 2.5rem; /* Leaves room clear for visibility layout button alignment */
+}
+
+/* Inline Show/Hide Button Placement */
+.auth-input-visibility-toggle {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  transition: color 0.15s;
+}
+
+.auth-input-visibility-toggle:hover {
+  color: #4b5563;
+}
+
+.auth-input-visibility-toggle:focus {
+  outline: 1px solid #111827;
+}
+
+/* --- PRIMARY FORM ACCELERATOR OPERATION BUTTON --- */
+.auth-submit-trigger {
+  background-color: #111827;
+  border: 1px solid #111827;
+  border-radius: 0.5rem;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.15s ease-in-out;
+  margin-top: 0.25rem;
+}
+
+.auth-submit-trigger:hover:not(:disabled) {
+  background-color: #1f2937;
+  border-color: #1f2937;
+}
+
+.auth-submit-trigger:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.auth-submit-trigger:disabled {
+  background-color: #9ca3af;
+  border-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* --- CONTEXT SEPARATION ACCORDION DIVIDER --- */
+.auth-ui-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1.75rem 0;
+  width: 100%;
+}
+
+.ui-divider-line {
+  flex-grow: 1;
+  height: 1px;
+  background-color: #e5e7eb;
+}
+
+.ui-divider-text {
+  color: #9ca3af;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0 0.75rem;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+/* --- FLUID GOOGLE AUTH CONTAINER EMBED PATCH --- */
+.google-btn-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+/* Overriding internal layout limits of Google OAuth Component */
+.google-btn-wrapper > div {
+  width: 100% !important;
+}
+
+.google-btn-wrapper iframe {
+  width: 100% !important;
+  margin: 0 auto;
+}
+
+/* --- BOTTOM REDIRECT FRAME --- */
+.auth-footer-redirect-hint {
+  color: #4b5563;
+  font-size: 0.8125rem;
+  text-align: center;
+  margin: 0;
+}
+
+.auth-footer-redirect-link {
+  color: #111827;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1.5px solid transparent;
+  transition: border-color 0.15s;
+}
+
+.auth-footer-redirect-link:hover {
+  border-color: #111827;
+}
+
+/* --- TRANSITION ANIMATIONS --- */
+@keyframes slideDownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* ==========================================
+   --- MOBILE AUTHENTICATION RESPONSIVENESS ---
+   ========================================== */
+@media (max-width: 480px) {
+  /* 1. Viewport Adaptation Matrix 
+     Strip padding and rely on full height so the card fills the phone viewport seamlessly 
+  */
+  .auth-viewport {
+    padding: 0;
+    background-color: #ffffff; /* Match card background to eliminate empty outer margins */
+    align-items: flex-start; /* Prevent clipping if long content forces overflow scrolling */
+  }
+
+  /* 2. Container Frame Adaptations 
+     Transform the authentication component container block into a smooth, borderless full-screen flow
+  */
+  .auth-card-frame {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    max-width: 100%;
+    min-height: 100vh;
+    padding: 2.5rem 1.5rem 1.5rem 1.5rem; /* Retain standard spacing internally */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center form fields vertically inside mobile screen spaces */
+  }
+
+  /* 3. Typography Realignment Scales */
+  .auth-main-title {
+    font-size: 1.5rem; /* Downscale layout size slightly for shorter device tracking */
+    letter-spacing: -0.02em;
+  }
+
+  .auth-sub-title {
+    font-size: 0.85rem;
+    padding: 0 0.5rem; /* Prevent layout text folding hard against outer glass breaks */
+  }
+
+  /* 4. Alert Banner Realignment */
+  .auth-alert-banner {
+    padding: 0.65rem 0.85rem;
+    font-size: 0.78rem;
+    gap: 0.5rem;
+  }
+
+  /* 5. Touch Target & Input Upgrades
+     Slightly raise element interaction profiles to simplify phone keypad submission targets
+  */
+  .auth-field-input {
+    font-size: 1rem; /* ⚡ CRITICAL: Stops iOS Safari from zooming automatically when input is selected */
+    padding: 0.75rem 0.875rem; /* Increase height for easier finger-tap initialization */
+  }
+
+  .password-input-padding {
+    padding-right: 2.75rem; /* Ensure hidden visibility key remains safely clear of user inputs */
+  }
+
+  .auth-input-visibility-toggle {
+    right: 0.85rem;
+    padding: 0.35rem; /* Expand finger touch alignment target area */
+  }
+
+  /* 6. Form Submission Trigger Optimization */
+  .auth-submit-trigger {
+    font-size: 1rem;
+    padding: 0.85rem 1rem; /* Enlarge submit action block profile for quick accessibility thumb reaches */
+    margin-top: 0.5rem;
+  }
+
+  /* 7. Divider Separator Layout Modifications */
+  .auth-ui-divider {
+    margin: 1.5rem 0;
+  }
+
+  /* 8. Bottom Switch Link Line Height Fix */
+  .auth-footer-redirect-hint {
+    font-size: 0.85rem;
+    margin-top: auto; /* Push the link action text to the bottom frame threshold of the layout stack */
+    padding-top: 2rem;
+  }
+}

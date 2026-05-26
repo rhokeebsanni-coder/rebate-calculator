@@ -1,0 +1,354 @@
+/* --- CONTAINER VIEWPORT --- */
+.register-viewport {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: #fafafa;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  box-sizing: border-box;
+  padding: 1.5rem;
+}
+
+/* --- THE CARD FRAME --- */
+.register-card-frame {
+  background-color: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 8px 24px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  max-width: 400px;
+  padding: 2.25rem 2rem;
+  box-sizing: border-box;
+}
+
+/* --- HEADER TEXT --- */
+.register-header-block {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+.register-main-title {
+  color: #171717;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin: 0 0 0.35rem 0;
+}
+
+.register-sub-title {
+  color: #737373;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* --- DISPATCH ERROR BANNER --- */
+.register-alert-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #fef2f2;
+  border: 1px solid #fee2e2;
+  border-radius: 6px;
+  padding: 0.65rem 0.85rem;
+  color: #991b1b;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-bottom: 1.25rem;
+  animation: regFadeIn 0.2s ease-out;
+}
+
+.register-alert-icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  color: #ef4444;
+}
+
+/* --- FORM MATRICES --- */
+.register-core-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.register-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.register-field-label {
+  color: #404040;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.register-input-positional-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.register-field-input {
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #d4d4d4;
+  border-radius: 6px;
+  color: #171717;
+  font-size: 0.9rem;
+  padding: 0.55rem 0.75rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.15s ease-in-out;
+}
+
+.register-field-input::placeholder {
+  color: #a3a3a3;
+}
+
+.register-field-input:focus {
+  border-color: #171717;
+  box-shadow: 0 0 0 2px rgba(23, 23, 23, 0.05);
+}
+
+.register-field-input:disabled {
+  background-color: #f5f5f5;
+  color: #a3a3a3;
+  cursor: not-allowed;
+}
+
+.register-password-padding {
+  padding-right: 2.25rem;
+}
+
+.register-input-visibility-toggle {
+  position: absolute;
+  right: 0.65rem;
+  background: none;
+  border: none;
+  color: #a3a3a3;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem;
+  border-radius: 4px;
+}
+
+.register-input-visibility-toggle:hover {
+  color: #404040;
+}
+
+/* --- ACCENT CHECKBOX CONTROL --- */
+.register-checkbox-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-top: 0.1rem;
+}
+
+.register-checkbox-input {
+  width: 0.95rem;
+  height: 0.95rem;
+  margin-top: 0.15rem;
+  border-radius: 4px;
+  border: 1px solid #d4d4d4;
+  accent-color: #171717;
+  cursor: pointer;
+}
+
+.register-checkbox-label {
+  color: #525252;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* --- PRIMARY BUTTON ACTION --- */
+.register-submit-trigger {
+  background-color: #171717;
+  border: 1px solid #171717;
+  border-radius: 6px;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.65rem 1rem;
+  text-align: center;
+  transition: all 0.15s ease-in-out;
+  margin-top: 0.25rem;
+}
+
+.register-submit-trigger:hover:not(:disabled) {
+  background-color: #262626;
+  border-color: #262626;
+}
+
+.register-submit-trigger:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.register-submit-trigger:disabled {
+  background-color: #d4d4d4;
+  border-color: #d4d4d4;
+  cursor: not-allowed;
+}
+
+/* --- REFINED SEPARATORS --- */
+.register-ui-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1.25rem 0;
+  width: 100%;
+}
+
+.register-divider-line {
+  flex-grow: 1;
+  height: 1px;
+  background-color: #eaeaea;
+}
+
+.register-divider-text {
+  color: #a3a3a3;
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 0 0.5rem;
+  text-transform: uppercase;
+}
+
+/* --- GOOGLE IDENTITY CONTAINER FLUIDITY --- */
+.register-google-btn-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 1.25rem;
+}
+
+.register-google-btn-wrapper > div {
+  width: 100% !important;
+}
+
+.register-google-btn-wrapper iframe {
+  width: 100% !important;
+}
+
+/* --- FOOTER REDIRECT NAVIGATION --- */
+.register-footer-redirect-hint {
+  color: #525252;
+  font-size: 0.8rem;
+  text-align: center;
+  margin: 0;
+}
+
+.register-footer-redirect-link {
+  color: #171717;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-footer-redirect-link:hover {
+  text-decoration: underline;
+}
+
+@keyframes regFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* ==========================================
+   --- MOBILE REGISTRATION RESPONSIVENESS ---
+   ========================================== */
+@media (max-width: 480px) {
+  /* 1. Structural Fluidity Adaptations Matrix */
+  .register-viewport {
+    padding: 0;
+    background-color: #ffffff; /* Strip container background tone gaps */
+    align-items: flex-start; /* Protect scrolling integrity for taller layouts */
+  }
+
+  .register-card-frame {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    max-width: 100%;
+    min-height: 100vh;
+    padding: 2.25rem 1.25rem 1.5rem 1.25rem; /* Tighten edge boundaries slightly */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Evenly space items vertically across device screen */
+  }
+
+  /* 2. Header and Banner Reductions */
+  .register-main-title {
+    font-size: 1.375rem; /* Downscale header footprint slightly */
+    letter-spacing: -0.02em;
+  }
+
+  .register-sub-title {
+    font-size: 0.8rem;
+  }
+
+  .register-alert-banner {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  /* 3. Mobile Form Input Optimization 
+     Increases tap areas and forces a safe baseline text metric
+  */
+  .register-field-input {
+    font-size: 1rem; /* ⚡ CRITICAL: Disables forced iOS browser layout auto-zooming on select */
+    padding: 0.7rem 0.85rem; /* Enlarge tap targets for finger mechanics */
+    border-radius: 8px; /* Clean look on smooth screens */
+  }
+
+  .register-password-padding {
+    padding-right: 2.5rem;
+  }
+
+  .register-input-visibility-toggle {
+    right: 0.75rem;
+    padding: 0.3rem; /* Enhance hit detection area */
+  }
+
+  /* 4. Checkbox Elements Touch Realignment */
+  .register-checkbox-container {
+    gap: 0.65rem;
+    padding: 0.25rem 0; /* Add top/bottom spacing to prevent accidental double-taps */
+  }
+
+  .register-checkbox-input {
+    width: 1.1rem; /* Slightly embiggen checkbox block for easier tracking hooks */
+    height: 1.1rem;
+    margin-top: 0.05rem; /* Center checkbox baseline naturally against wrapped label rows */
+  }
+
+  .register-checkbox-label {
+    font-size: 0.8rem; /* Make microscopic fine print terms legible */
+  }
+
+  /* 5. Interface Action Triggers & Spacing */
+  .register-submit-trigger {
+    font-size: 1rem;
+    padding: 0.8rem 1rem; /* Build solid tap targets */
+    border-radius: 8px;
+    margin-top: 0.5rem;
+  }
+
+  .register-ui-divider {
+    margin: 1.25rem 0;
+  }
+
+  /* 6. Base Interface Links Row Split */
+  .register-footer-redirect-hint {
+    font-size: 0.85rem;
+    margin-top: auto; /* Pin registration switch mechanics elegantly above keyboard/viewport floor */
+    padding-top: 2rem;
+  }
+}
