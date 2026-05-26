@@ -6,7 +6,6 @@ const authRouter = require("./routes/auth.js");
 const snapshotRouter = require("./routes/snapshot.js");
 const materialsRouter = require("./routes/materials.js");
 
-
 const notFound = require("./middleware/notFound.js");
 const errorHandlerMiddleware = require("./middleware/error-handler.js");
 const connectDB = require("./db/connect.js");
@@ -14,13 +13,11 @@ const connectDB = require("./db/connect.js");
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Validate environment variables
 const requiredEnvVars = [
   "MONGO_URI",
   "JWT_SECRET",
   "GOOGLE_CLIENT_ID",
-  "EMAIL_USER",
-  "EMAIL_PASS",
+  "RESEND_API_KEY",
 ];
 
 const missingVars = requiredEnvVars.filter((varName) => !process.env[varName]);
@@ -29,7 +26,6 @@ if (missingVars.length > 0) {
   process.exit(1);
 }
 
-// Middleware
 app.use(
   cors({
     origin: [
@@ -41,17 +37,13 @@ app.use(
 );
 app.use(express.json());
 
-// Routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/snapshots", snapshotRouter);
 app.use("/api/v1/materials", materialsRouter);
 
-
-// Error handling
 app.use(notFound);
 app.use(errorHandlerMiddleware);
 
-// Start server
 const start = async () => {
   try {
     await connectDB(process.env.MONGO_URI);
