@@ -193,7 +193,7 @@ const Register = () => {
           <span className="register-divider-line"></span>
         </div>
 
-        <div className="register-google-btn-wrapper">
+        <div className="google-btn-wrapper">
           <GoogleSignIn
             onSuccess={async (credentialResponse) => {
               try {
