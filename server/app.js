@@ -30,7 +30,15 @@ if (missingVars.length > 0) {
 }
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://rebate-calculator-amber.vercel.app/",
+    ],
+    credentials: true,
+  }),
+);
 app.use(express.json());
 
 // Routes
