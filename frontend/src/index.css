@@ -799,6 +799,7 @@
   .app-sidebar {
     width: 85vw; /* Expand drawer to cover most of the view matrix */
     box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15); /* Soft background block drop */
+    z-index: 1000;
   }
 
   .sidebar-open {
