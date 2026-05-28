@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import API, { setAccessToken } from "../api/index";
+import API, { setAccessToken } from "../api/products";
 import VerifyOTP from "../components/VerifyOTP";
 import GoogleSignIn from "../components/GoogleSignIn";
 import "../Login.css";

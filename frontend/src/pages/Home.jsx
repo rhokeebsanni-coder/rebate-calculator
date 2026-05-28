@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import API, { clearAccessToken } from "../api/index";
+import API, { clearAccessToken } from "../api/products";
 import HomeSkeleton from "../components/HomeSkeleton";
 
 const Home = () => {
