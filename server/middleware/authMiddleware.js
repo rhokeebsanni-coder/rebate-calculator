@@ -1,21 +1,50 @@
 const jwt = require("jsonwebtoken");
+const User = require("../models/users.js");
 const CustomError = require("../errors/custom-error.js");
 
 const authMiddleware = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
+  // Support both Authorization header and HttpOnly cookie.
+  // Header takes precedence for API clients; cookie for browser clients.
+  let token;
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  const authHeader = req.headers.authorization;
+  if (authHeader?.startsWith("Bearer ")) {
+    token = authHeader.split(" ")[1];
+  } else if (req.cookies?.accessToken) {
+    token = req.cookies.accessToken;
+  }
+
+  if (!token) {
     return next(new CustomError("No token provided.", 401));
   }
 
-  const token = authHeader.split(" ")[1];
-
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+
+    // Verify the user still exists and is active — a valid token for a
+    // deleted or deactivated account should not grant access.
+    const user = await User.findOne({ _id: decoded.userId, isActive: true });
+
+    if (!user) {
+      return next(new CustomError("Account not found or deactivated.", 401));
+    }
+
+    // Verify the user is verified — unverified users should not access
+    // protected routes even with a valid token.
+    if (!user.isVerified) {
+      return next(new CustomError("Account not verified.", 403));
+    }
+
+    // Attach minimal identity to req — never the full user document.
+    req.user = { userId: decoded.userId };
+
     next();
   } catch (error) {
-    return next(new CustomError("Invalid or expired token.", 401));
+    // Distinguish expiry from other errors for clearer client handling.
+    if (error.name === "TokenExpiredError") {
+      return next(new CustomError("Token expired.", 401));
+    }
+    return next(new CustomError("Invalid token.", 401));
   }
 };
 

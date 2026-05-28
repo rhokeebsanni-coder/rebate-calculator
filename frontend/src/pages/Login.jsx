@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import API from "../api/products";
+import API, { setAccessToken } from "../api/products";
 import VerifyOTP from "../components/VerifyOTP";
 import GoogleSignIn from "../components/GoogleSignIn";
 import "../Login.css";
@@ -28,7 +28,9 @@ const Login = () => {
       if (response.data?.requiresVerification) {
         setRequiresVerification(true);
       } else {
-        localStorage.setItem("token", response.data.token);
+        // FIX — store access token in memory, not localStorage.
+        // The refresh token is handled automatically via HttpOnly cookie.
+        setAccessToken(response.data.accessToken);
         navigate("/", { replace: true });
       }
     } catch (error) {
@@ -187,12 +189,14 @@ const Login = () => {
 
         <div className="google-btn-wrapper">
           <GoogleSignIn
+            disabled={isLoading}
             onSuccess={async (credentialResponse) => {
               try {
                 const response = await API.post("/auth/google", {
                   credential: credentialResponse.credential,
                 });
-                localStorage.setItem("token", response.data.token);
+                // FIX — same as above, memory only.
+                setAccessToken(response.data.accessToken);
                 navigate("/", { replace: true });
               } catch (error) {
                 setError(

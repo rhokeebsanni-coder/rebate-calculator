@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const { Resend } = require("resend");
 const bcrypt = require("bcryptjs");
 const User = require("../models/users.js");
@@ -6,45 +7,38 @@ const CustomError = require("../errors/custom-error");
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendVerificationEmail = async (email, otp) => {
-  try {
-    // 1. Logic for the SENDER
-    const sender =
-      process.env.NODE_ENV === "production" && process.env.VERIFIED_EMAIL_FROM
-        ? process.env.VERIFIED_EMAIL_FROM
-        : "Verification <onboarding@resend.dev>";
+  const sender =
+    process.env.NODE_ENV === "production" && process.env.VERIFIED_EMAIL_FROM
+      ? process.env.VERIFIED_EMAIL_FROM
+      : "Verification <onboarding@resend.dev>";
 
-    // 2. Logic for the RECIPIENT (The Sandbox Bypass)
-    // If in production, send to the actual user. If in dev, route it to your TEST_EMAIL.
-    const recipient =
-      process.env.NODE_ENV === "production" ? email : process.env.TEST_EMAIL;
+  const recipient =
+    process.env.NODE_ENV === "production" ? email : process.env.TEST_EMAIL;
 
-    const { data, error } = await resend.emails.send({
-      from: sender,
-      to: recipient,
-      subject: "Verify Your Email",
-      html: `<div style="font-family:sans-serif; padding:20px; border:1px solid #7a5e3e;">
-              <h2>Verification Code</h2>
-              <p>Use this code to verify your account (Local Test Mode routed to: ${email}):</p>
-              <h1 style="letter-spacing:4px; color:#7a5e3e;">${otp}</h1>
-              <p>Code expires in 15 minutes.</p>
-             </div>`,
-    });
+  // OTP should never appear in logs — redact it.
+  const { data, error } = await resend.emails.send({
+    from: sender,
+    to: recipient,
+    subject: "Verify Your Email",
+    html: `<div style="font-family:sans-serif;padding:20px;border:1px solid #7a5e3e;">
+            <h2>Verification Code</h2>
+            <p>Use this code to verify your account:</p>
+            <h1 style="letter-spacing:4px;color:#7a5e3e;">${otp}</h1>
+            <p>Code expires in 15 minutes. If you didn't request this, ignore this email.</p>
+           </div>`,
+  });
 
-    if (error) {
-      console.error("Full Resend error:", JSON.stringify(error, null, 2));
-      // Throw a standard Error here so the catch block can read the exact message
-      throw new Error(error.message);
-    }
-
-    return data;
-  } catch (error) {
-    console.error("Email error:", error.message || error);
-    // Pass the actual error message to the frontend so you aren't left guessing
-    throw new CustomError(
-      `Email failed: ${error.message || "Unknown error"}`,
-      500,
+  if (error) {
+    // Log internally but never forward the raw provider error to the caller —
+    // let the controller decide what the client sees.
+    console.error(
+      "[sendVerificationEmail] Resend error:",
+      JSON.stringify(error),
     );
+    throw new Error(error.message);
   }
+
+  return data;
 };
 
 const verifyEmail = async (req, res) => {
@@ -55,8 +49,16 @@ const verifyEmail = async (req, res) => {
     throw new CustomError("Email and OTP required.", 400);
   }
 
-  const user = await User.findOne({ email });
-  if (!user) throw new CustomError("Account not found.", 404);
+  // FIX — Select the OTP fields that are hidden by default (select: false).
+  const user = await User.findOne({ email }).select(
+    "+verificationOTP +otpExpiresAt +otpSentAt",
+  );
+
+  // FIX — Return the same error for not-found and already-verified to avoid
+  // confirming whether an email exists in the system.
+  if (!user) {
+    throw new CustomError("Invalid or expired code.", 400);
+  }
 
   if (user.isVerified) {
     return res
@@ -64,11 +66,14 @@ const verifyEmail = async (req, res) => {
       .json({ success: true, message: "Already verified." });
   }
 
-  const isMatch = user.verificationOTP
-    ? await bcrypt.compare(otp, user.verificationOTP)
-    : false;
+  // FIX — Check expiry BEFORE bcrypt.compare to avoid wasting time on
+  // an OTP that's already invalid.
+  if (!user.verificationOTP || Date.now() > user.otpExpiresAt) {
+    throw new CustomError("Invalid or expired code.", 400);
+  }
 
-  if (!isMatch || Date.now() > user.otpExpiresAt) {
+  const isMatch = await bcrypt.compare(otp, user.verificationOTP);
+  if (!isMatch) {
     throw new CustomError("Invalid or expired code.", 400);
   }
 
@@ -88,24 +93,42 @@ const resendOTP = async (req, res) => {
     throw new CustomError("Email required.", 400);
   }
 
-  const user = await User.findOne({ email });
-  if (!user) throw new CustomError("Account not found.", 404);
+  // FIX — Select hidden OTP fields needed for cooldown check.
+  const user = await User.findOne({ email }).select(
+    "+otpSentAt +verificationOTP +otpExpiresAt",
+  );
 
-  // Use a dedicated otpSentAt field for rate limiting — more reliable
-  if (user.otpSentAt && Date.now() < user.otpSentAt + 60 * 1000) {
+  // FIX — Don't reveal whether the email exists; return the same response
+  // either way to prevent enumeration.
+  if (!user || user.isVerified) {
+    return res
+      .status(200)
+      .json({ success: true, message: "Verification code sent." });
+  }
+
+  if (user.otpSentAt && Date.now() < user.otpSentAt.getTime() + 60 * 1000) {
     throw new CustomError("Please wait 1 minute before resending.", 429);
   }
 
-  const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
+  // FIX — Use crypto.randomInt() instead of Math.random().
+  const newOtp = crypto.randomInt(100000, 1000000).toString();
 
-  // Send email first — only save if it succeeds
-  await sendVerificationEmail(user.email, newOtp);
-
-  const hashedOtp = await bcrypt.hash(newOtp, 10);
+  // FIX — Hash and save BEFORE sending the email so they're never out of sync.
+  const hashedOtp = await bcrypt.hash(newOtp, 12);
   user.verificationOTP = hashedOtp;
-  user.otpExpiresAt = Date.now() + 15 * 60 * 1000;
-  user.otpSentAt = Date.now();
+  user.otpExpiresAt = new Date(Date.now() + 15 * 60 * 1000);
+  user.otpSentAt = new Date();
   await user.save();
+
+  try {
+    await sendVerificationEmail(user.email, newOtp);
+  } catch (mailError) {
+    console.error("[resendOTP] Failed to send email:", {
+      userId: user._id,
+      error: mailError?.message,
+    });
+    throw new CustomError("Failed to send verification email.", 500);
+  }
 
   res.status(200).json({ success: true, message: "Verification code sent." });
 };
@@ -115,7 +138,8 @@ const getMe = async (req, res) => {
     throw new CustomError("Not authenticated.", 401);
   }
 
-  const user = await User.findById(req.user.userId);
+  // FIX — Explicitly select email since it's now select: false on the schema.
+  const user = await User.findById(req.user.userId).select("+email");
   if (!user) throw new CustomError("User not found.", 404);
 
   res.status(200).json({

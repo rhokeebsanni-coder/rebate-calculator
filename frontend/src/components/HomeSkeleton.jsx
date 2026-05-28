@@ -34,28 +34,19 @@ const HomeSkeleton = () => {
         />
       </div>
 
-      <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+      {/* Main Container: Flips layout orientation on mobile */}
+      <div className="main-container">
         {/* Main content skeleton */}
         <div
           style={{
             flex: 1,
-            padding: "2rem",
+            padding: "1.5rem", // Slightly reduced for cleaner mobile padding
             overflow: "auto",
             backgroundColor: "#f5f5f5",
           }}
         >
-          {/* Parameter card skeleton */}
-          <div
-            style={{
-              backgroundColor: "#fff",
-              borderRadius: "12px",
-              padding: "1.5rem",
-              marginBottom: "1.5rem",
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: "1.5rem",
-            }}
-          >
+          {/* Parameter card skeleton: Shifts from 3 cols to 1 col */}
+          <div className="parameter-grid">
             {[1, 2, 3].map((i) => (
               <div key={i}>
                 <div
@@ -94,6 +85,7 @@ const HomeSkeleton = () => {
                 borderBottom: "1px solid #f5f5f5",
                 display: "flex",
                 justifyContent: "space-between",
+                alignItems: "center",
               }}
             >
               <div
@@ -126,22 +118,13 @@ const HomeSkeleton = () => {
               </div>
             </div>
 
-            {/* Table rows skeleton */}
+            {/* Table rows skeleton: Simplifies column widths on mobile */}
             {[1, 2, 3, 4, 5].map((i) => (
-              <div
-                key={i}
-                style={{
-                  padding: "1rem 1.5rem",
-                  borderBottom: "1px solid #f5f5f5",
-                  display: "grid",
-                  gridTemplateColumns: "2fr 1fr 1fr 0.5fr",
-                  gap: "1rem",
-                  alignItems: "center",
-                }}
-              >
+              <div key={i} className="table-row">
                 {[1, 2, 3, 4].map((j) => (
                   <div
                     key={j}
+                    className={`table-cell cell-${j}`}
                     style={{
                       height: "20px",
                       backgroundColor: "#e5e5e5",
@@ -155,20 +138,10 @@ const HomeSkeleton = () => {
           </div>
         </div>
 
-        {/* Sidebar skeleton */}
-        <div
-          style={{
-            width: "320px",
-            borderLeft: "1px solid #e5e5e5",
-            backgroundColor: "#fff",
-            padding: "1.5rem",
-            display: "flex",
-            flexDirection: "column",
-            gap: "2rem",
-          }}
-        >
+        {/* Sidebar skeleton: Stacks underneath main content on mobile */}
+        <div className="sidebar-container">
           {/* History skeleton */}
-          <div>
+          <div style={{ flex: 1 }}>
             <div
               style={{
                 height: "16px",
@@ -234,11 +207,7 @@ const HomeSkeleton = () => {
                   animation: "pulse 2s infinite",
                 }}
               />
-              <div
-                style={{
-                  flex: 1,
-                }}
-              >
+              <div style={{ flex: 1 }}>
                 <div
                   style={{
                     height: "14px",
@@ -262,10 +231,74 @@ const HomeSkeleton = () => {
         </div>
       </div>
 
+      {/* Media Queries and Keyframes CSS */}
       <style>{`
+        /* Base Desktop styles mapping to your layout choices */
+        .main-container {
+          display: flex;
+          flex: 1;
+          overflow: hidden;
+        }
+        .parameter-grid {
+          background-color: #fff;
+          border-radius: 12px;
+          padding: 1.5rem;
+          margin-bottom: 1.5rem;
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 1.5rem;
+        }
+        .sidebar-container {
+          width: 320px;
+          border-left: 1px solid #e5e5e5;
+          background-color: #fff;
+          padding: 1.5rem;
+          display: flex;
+          flex-direction: column;
+          gap: 2rem;
+        }
+        .table-row {
+          padding: 1rem 1.5rem;
+          border-bottom: 1px solid #f5f5f5;
+          display: grid;
+          grid-template-columns: 2fr 1fr 1fr 0.5fr;
+          gap: 1rem;
+          align-items: center;
+        }
+
         @keyframes pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.5; }
+        }
+
+        /* 📱 Mobile and Tablet Updates (< 768px) */
+        @media (max-width: 768px) {
+          .main-container {
+            flex-direction: column;
+            overflow: auto; /* Allow the entire viewport to scroll naturally */
+          }
+          
+          .parameter-grid {
+            grid-template-columns: 1fr; /* Stack inputs down a single row */
+            gap: 1rem;
+          }
+
+          .sidebar-container {
+            width: 100%;
+            border-left: none;
+            border-top: 1px solid #e5e5e5; /* Separate content cleanly */
+            box-sizing: border-box;
+          }
+
+          .table-row {
+            grid-template-columns: 2fr 1fr; /* Hide secondary layout noise on mobile arrays */
+            gap: 0.75rem;
+          }
+
+          /* Hide minor table columns so layout doesn't break boundaries on narrow views */
+          .cell-3, .cell-4 {
+            display: none;
+          }
         }
       `}</style>
     </div>
