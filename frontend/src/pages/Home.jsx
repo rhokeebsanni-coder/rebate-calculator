@@ -10,7 +10,7 @@ const Home = () => {
   const [rebate, setRebate] = useState("");
   const [history, setHistory] = useState([]);
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 768);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [hasInitialized, setHasInitialized] = useState(false);
@@ -92,6 +92,21 @@ const Home = () => {
     }
   }, [skus, isAuthenticated]);
 
+  // Scroll lock when sidebar is open on mobile
+  useEffect(() => {
+    const isMobile = () => window.innerWidth < 768;
+
+    if (isSidebarOpen && isMobile()) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isSidebarOpen]);
+
   const savePendingMaterials = async (existingMaterials) => {
     try {
       const savedSkus = localStorage.getItem("guestSkus");
@@ -124,7 +139,6 @@ const Home = () => {
     }
   };
 
-  // Show skeleton while loading
   if (isLoading && !hasInitialized) {
     return <HomeSkeleton />;
   }
@@ -252,19 +266,9 @@ const Home = () => {
 
   return (
     <div className="app-wrapper">
-      {/* Overlay */}
+      {/* Overlay — no inline display:none, CSS handles mobile-only visibility */}
       {isSidebarOpen && (
         <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            zIndex: 40,
-            display: "none",
-          }}
           className="sidebar-overlay"
           onClick={() => setIsSidebarOpen(false)}
         />
@@ -284,39 +288,35 @@ const Home = () => {
               viewBox="0 0 24 24"
               style={{ width: "24px", height: "24px" }}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
+              {isSidebarOpen ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              )}
             </svg>
           </button>
           <h1 className="header-title">Wholesale Pricing Engine</h1>
         </div>
 
         <nav className="nav-actions">
-          <span
-            style={{ marginRight: "1rem", fontSize: "0.9rem", color: "#666" }}
+          <div
+            className={`status-badge ${isAuthenticated ? "status-authenticated" : "status-guest"}`}
           >
-            {isAuthenticated ? "Logged In" : "Guest Mode"}
-          </span>
-          {isAuthenticated && (
-            <button
-              onClick={handleSignOut}
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                color: "#666",
-                fontSize: "0.9rem",
-                textDecoration: "underline",
-              }}
-              title="Sign out"
-            >
-              Sign Out
-            </button>
-          )}
+            <span className="status-dot"></span>
+            <span className="status-text">
+              {isAuthenticated ? "Live Sync Active" : "Guest Mode"}
+            </span>
+          </div>
         </nav>
       </header>
 
@@ -406,7 +406,7 @@ const Home = () => {
               <table className="matrix-table">
                 <thead>
                   <tr className="table-head-row">
-                    <th>Material</th>
+                    <th className="w-yield">Material</th>
                     <th className="w-yield">Yield Per Ton</th>
                     <th className="w-price">Unit Price</th>
                     <th className="w-actions">Actions</th>
@@ -460,7 +460,20 @@ const Home = () => {
                             onClick={() => handleDeleteRow(item._id)}
                             className="btn-delete"
                           >
-                            Remove
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              style={{ width: "18px", height: "18px" }}
+                            >
+                              <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                              <line x1="10" y1="11" x2="10" y2="17" />
+                              <line x1="14" y1="11" x2="14" y2="17" />
+                            </svg>
                           </button>
                         </td>
                       </tr>
@@ -550,7 +563,12 @@ const Home = () => {
 
           <div
             className="account-widget"
-            style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.75rem",
+              marginBottom: "20px",
+            }}
           >
             {isAuthenticated ? (
               <>
@@ -569,6 +587,24 @@ const Home = () => {
                       <span className="badge-pulse"></span>
                       {user.role}
                     </span>
+                  </div>
+                  <div>
+                    <button
+                      onClick={handleSignOut}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        color: "#666",
+                        fontSize: "0.9rem",
+                        textDecoration: "underline",
+                        whiteSpace: "nowrap", // 🛡️ Prevents text from crunching or wrapping
+                        padding: "0.25rem 0.5rem", // Gives it a small click target padding
+                      }}
+                      title="Sign out"
+                    >
+                      Sign Out
+                    </button>
                   </div>
                 </div>
 

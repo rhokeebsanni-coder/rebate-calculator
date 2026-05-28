@@ -1,26 +1,56 @@
+/* --- GLOBAL RESET --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
 /* --- CONTAINER VIEWPORT --- */
 .register-viewport {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  width: 100vw;
-  background-color: #fafafa;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  box-sizing: border-box;
+
+  min-height: 100dvh;
+  width: 100%;
+
   padding: 1.5rem;
+
+  background-color: #fafafa;
+
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+
+  overflow-x: hidden;
 }
 
 /* --- THE CARD FRAME --- */
 .register-card-frame {
-  background-color: #ffffff;
-  border: 1px solid #e5e5e5;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 8px 24px rgba(0, 0, 0, 0.04);
   width: 100%;
   max-width: 400px;
+
+  background-color: #ffffff;
+
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.02),
+    0 8px 24px rgba(0, 0, 0, 0.04);
+
   padding: 2.25rem 2rem;
-  box-sizing: border-box;
 }
 
 /* --- HEADER TEXT --- */
@@ -49,14 +79,20 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+
   background-color: #fef2f2;
+
   border: 1px solid #fee2e2;
   border-radius: 6px;
+
   padding: 0.65rem 0.85rem;
+
   color: #991b1b;
   font-size: 0.8rem;
   font-weight: 500;
+
   margin-bottom: 1.25rem;
+
   animation: regFadeIn 0.2s ease-out;
 }
 
@@ -96,15 +132,22 @@
 
 .register-field-input {
   width: 100%;
+
   background-color: #ffffff;
+
   border: 1px solid #d4d4d4;
   border-radius: 6px;
+
   color: #171717;
   font-size: 0.9rem;
+
   padding: 0.55rem 0.75rem;
+
   outline: none;
-  box-sizing: border-box;
-  transition: all 0.15s ease-in-out;
+
+  transition:
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
 }
 
 .register-field-input::placeholder {
@@ -129,14 +172,20 @@
 .register-input-visibility-toggle {
   position: absolute;
   right: 0.65rem;
+
   background: none;
   border: none;
+
   color: #a3a3a3;
+
   cursor: pointer;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   padding: 0.2rem;
+
   border-radius: 4px;
 }
 
@@ -149,16 +198,21 @@
   display: flex;
   align-items: flex-start;
   gap: 0.5rem;
+
   margin-top: 0.1rem;
 }
 
 .register-checkbox-input {
   width: 0.95rem;
   height: 0.95rem;
+
   margin-top: 0.15rem;
+
   border-radius: 4px;
   border: 1px solid #d4d4d4;
+
   accent-color: #171717;
+
   cursor: pointer;
 }
 
@@ -166,6 +220,7 @@
   color: #525252;
   font-size: 0.75rem;
   line-height: 1.4;
+
   cursor: pointer;
   user-select: none;
 }
@@ -173,15 +228,26 @@
 /* --- PRIMARY BUTTON ACTION --- */
 .register-submit-trigger {
   background-color: #171717;
+
   border: 1px solid #171717;
   border-radius: 6px;
+
   color: #ffffff;
+
   cursor: pointer;
+
   font-size: 0.9rem;
   font-weight: 600;
+
   padding: 0.65rem 1rem;
+
   text-align: center;
-  transition: all 0.15s ease-in-out;
+
+  transition:
+    background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out,
+    transform 0.15s ease-in-out;
+
   margin-top: 0.25rem;
 }
 
@@ -205,7 +271,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
   margin: 1.25rem 0;
+
   width: 100%;
 }
 
@@ -219,7 +287,9 @@
   color: #a3a3a3;
   font-size: 0.7rem;
   font-weight: 500;
+
   padding: 0 0.5rem;
+
   text-transform: uppercase;
 }
 
@@ -227,7 +297,9 @@
 .register-google-btn-wrapper {
   display: flex;
   justify-content: center;
+
   width: 100%;
+
   margin-bottom: 1.25rem;
 }
 
@@ -257,36 +329,54 @@
   text-decoration: underline;
 }
 
+/* --- ANIMATIONS --- */
 @keyframes regFadeIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
 /* ==========================================
    --- MOBILE REGISTRATION RESPONSIVENESS ---
    ========================================== */
+
 @media (max-width: 480px) {
-  /* 1. Structural Fluidity Adaptations Matrix */
   .register-viewport {
     padding: 0;
-    background-color: #ffffff; /* Strip container background tone gaps */
-    align-items: flex-start; /* Protect scrolling integrity for taller layouts */
+
+    background-color: #ffffff;
+
+    align-items: stretch;
   }
 
   .register-card-frame {
+    width: 100%;
+    max-width: none;
+
+    min-height: 100dvh;
+
     border: none;
     border-radius: 0;
     box-shadow: none;
-    max-width: 100%;
-    min-height: 100vh;
-    padding: 2.25rem 1.25rem 1.5rem 1.25rem; /* Tighten edge boundaries slightly */
+
+    padding: 4rem 1.5rem 2rem;
+
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Evenly space items vertically across device screen */
+
+    justify-content: flex-start;
   }
 
-  /* 2. Header and Banner Reductions */
+  /* --- HEADER --- */
+
   .register-main-title {
-    font-size: 1.375rem; /* Downscale header footprint slightly */
+    font-size: 1.375rem;
     letter-spacing: -0.02em;
   }
 
@@ -294,18 +384,19 @@
     font-size: 0.8rem;
   }
 
+  /* --- ALERTS --- */
+
   .register-alert-banner {
     padding: 0.6rem 0.75rem;
     font-size: 0.75rem;
   }
 
-  /* 3. Mobile Form Input Optimization 
-     Increases tap areas and forces a safe baseline text metric
-  */
+  /* --- INPUTS --- */
+
   .register-field-input {
-    font-size: 1rem; /* ⚡ CRITICAL: Disables forced iOS browser layout auto-zooming on select */
-    padding: 0.7rem 0.85rem; /* Enlarge tap targets for finger mechanics */
-    border-radius: 8px; /* Clean look on smooth screens */
+    font-size: 1rem;
+    padding: 0.7rem 0.85rem;
+    border-radius: 8px;
   }
 
   .register-password-padding {
@@ -314,41 +405,51 @@
 
   .register-input-visibility-toggle {
     right: 0.75rem;
-    padding: 0.3rem; /* Enhance hit detection area */
+    padding: 0.3rem;
   }
 
-  /* 4. Checkbox Elements Touch Realignment */
+  /* --- CHECKBOX --- */
+
   .register-checkbox-container {
     gap: 0.65rem;
-    padding: 0.25rem 0; /* Add top/bottom spacing to prevent accidental double-taps */
+    padding: 0.25rem 0;
   }
 
   .register-checkbox-input {
-    width: 1.1rem; /* Slightly embiggen checkbox block for easier tracking hooks */
+    width: 1.1rem;
     height: 1.1rem;
-    margin-top: 0.05rem; /* Center checkbox baseline naturally against wrapped label rows */
+    margin-top: 0.05rem;
   }
 
   .register-checkbox-label {
-    font-size: 0.8rem; /* Make microscopic fine print terms legible */
+    font-size: 0.8rem;
   }
 
-  /* 5. Interface Action Triggers & Spacing */
+  /* --- BUTTONS --- */
+
   .register-submit-trigger {
     font-size: 1rem;
-    padding: 0.8rem 1rem; /* Build solid tap targets */
+
+    padding: 0.8rem 1rem;
+
     border-radius: 8px;
+
     margin-top: 0.5rem;
   }
+
+  /* --- DIVIDER --- */
 
   .register-ui-divider {
     margin: 1.25rem 0;
   }
 
-  /* 6. Base Interface Links Row Split */
+  /* --- FOOTER --- */
+
   .register-footer-redirect-hint {
     font-size: 0.85rem;
-    margin-top: auto; /* Pin registration switch mechanics elegantly above keyboard/viewport floor */
+
+    margin-top: auto;
+
     padding-top: 2rem;
   }
 }
