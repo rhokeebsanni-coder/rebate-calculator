@@ -1,5 +1,5 @@
 import {
-  BrowserRouter as Router,
+  BrowserRouter,
   Routes,
   Route,
   Navigate,
@@ -7,22 +7,21 @@ import {
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
-import ErrorBoundary from "./components/ErrorBoundary.jsx";
 
 const PublicRoute = ({ children }) => {
   const token = localStorage.getItem("token");
 
-  if (token) {
-    return <Navigate to="/" replace />;
+
+  if (!token || token === "undefined" || token === "null") {
+    return children;
   }
 
-  return children;
+  return <Navigate to="/" replace />;
 };
 
 function App() {
   return (
-    <ErrorBoundary>
-      <Router>
+      <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route
@@ -43,8 +42,7 @@ function App() {
           />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </Router>
-    </ErrorBoundary>
+      </BrowserRouter>
   );
 }
 

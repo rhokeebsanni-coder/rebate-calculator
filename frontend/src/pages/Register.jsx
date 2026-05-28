@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import API from "../api/products";
+import API, { setAccessToken } from "../api/index";
 import VerifyOTP from "../components/VerifyOTP";
 import GoogleSignIn from "../components/GoogleSignIn";
 import "../Register.css";
@@ -19,8 +19,8 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
     setIsLoading(true);
+
     try {
       const response = await API.post("/auth/register", {
         username,
@@ -54,7 +54,8 @@ const Register = () => {
                 email,
                 password,
               });
-              localStorage.setItem("token", response.data.token);
+              // FIX — memory only, no localStorage.
+              setAccessToken(response.data.accessToken);
               navigate("/", { replace: true });
             } catch (err) {
               console.error("Auto-login failed:", err);
@@ -180,8 +181,8 @@ const Register = () => {
 
           <button
             type="submit"
-            className="register-submit-trigger"
             disabled={isLoading}
+            className="register-submit-trigger"
           >
             {isLoading ? "Creating Profile..." : "Create Account"}
           </button>
@@ -195,12 +196,14 @@ const Register = () => {
 
         <div className="google-btn-wrapper">
           <GoogleSignIn
+            disabled={isLoading}
             onSuccess={async (credentialResponse) => {
               try {
                 const response = await API.post("/auth/google", {
                   credential: credentialResponse.credential,
                 });
-                localStorage.setItem("token", response.data.token);
+                // FIX — memory only, no localStorage.
+                setAccessToken(response.data.accessToken);
                 navigate("/", { replace: true });
               } catch (error) {
                 setError(

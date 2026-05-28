@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "../api/products";
+import API, { clearAccessToken } from "../api/index";
 import HomeSkeleton from "../components/HomeSkeleton";
 
 const Home = () => {
@@ -17,7 +17,7 @@ const Home = () => {
 
   const [user, setUser] = useState({
     username: "Guest",
-    image: "https://cdn-icons-png.flaticon.com/512/847/847969.png",
+    image: "/assets/default-avatar.png",
     role: "Guest User",
   });
 
@@ -27,53 +27,52 @@ const Home = () => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const token = localStorage.getItem("token");
 
-        if (token) {
-          const results = await Promise.allSettled([
-            API.get("/auth/me"),
-            API.get("/materials"),
-            API.get("/snapshots"),
-          ]);
+        // FIX — No longer checking localStorage for a token. Instead attempt
+        // the authenticated requests directly; the interceptor in api/index.js
+        // will attach the in-memory access token if one exists, and will
+        // silently refresh via the HttpOnly cookie if it has expired.
+        const results = await Promise.allSettled([
+          API.get("/auth/me"),
+          API.get("/materials"),
+          API.get("/snapshots"),
+        ]);
 
-          if (results[0].status === "fulfilled") {
-            const userData = results[0].value.data?.user;
-            if (userData) {
-              setUser({
-                username: userData.username || "Unknown",
-                image:
-                  userData.image ||
-                  "https://cdn-icons-png.flaticon.com/512/847/847969.png",
-                role: userData.role || "System Operator",
-              });
-              setIsAuthenticated(true);
-            }
+        if (results[0].status === "fulfilled") {
+          const userData = results[0].value.data?.user;
+          if (userData) {
+            setUser({
+              username: userData.username || "Unknown",
+              image: userData.image || "/assets/default-avatar.png",
+              role: userData.role || "System Operator",
+            });
+            setIsAuthenticated(true);
           }
+        } else {
+          // /auth/me failed — treat as guest, don't redirect.
+          setIsAuthenticated(false);
+          const savedSkus = localStorage.getItem("guestSkus");
+          if (savedSkus) setSkus(JSON.parse(savedSkus));
+        }
 
-          if (results[1].status === "fulfilled") {
-            setSkus(results[1].value.data?.materials || []);
-          } else {
-            const savedSkus = localStorage.getItem("guestSkus");
-            if (savedSkus) {
-              setSkus(JSON.parse(savedSkus));
-            }
-          }
+        if (results[1].status === "fulfilled") {
+          setSkus(results[1].value.data?.materials || []);
+        } else if (results[0].status !== "fulfilled") {
+          // Only fall back to guest skus if we're actually a guest.
+          const savedSkus = localStorage.getItem("guestSkus");
+          if (savedSkus) setSkus(JSON.parse(savedSkus));
+        }
 
-          if (results[2].status === "fulfilled") {
-            setHistory(results[2].value.data?.snapshots || []);
-          }
+        if (results[2].status === "fulfilled") {
+          setHistory(results[2].value.data?.snapshots || []);
+        }
 
+        if (results[0].status === "fulfilled") {
           await savePendingMaterials(
             results[1].status === "fulfilled"
               ? results[1].value.data?.materials || []
               : [],
           );
-        } else {
-          setIsAuthenticated(false);
-          const savedSkus = localStorage.getItem("guestSkus");
-          if (savedSkus) {
-            setSkus(JSON.parse(savedSkus));
-          }
         }
       } catch (err) {
         console.error("Failed to fetch data:", err);
@@ -83,7 +82,22 @@ const Home = () => {
       }
     };
 
+    // FIX — Listen for forced logout events dispatched by the API interceptor
+    // when a refresh attempt fails (e.g. refresh token expired).
+    const handleForcedLogout = () => {
+      setIsAuthenticated(false);
+      setUser({
+        username: "Guest",
+        image: "/assets/default-avatar.png",
+        role: "Guest User",
+      });
+      navigate("/login", { replace: true });
+    };
+
+    window.addEventListener("auth:logout", handleForcedLogout);
     fetchData();
+
+    return () => window.removeEventListener("auth:logout", handleForcedLogout);
   }, []);
 
   useEffect(() => {
@@ -100,9 +114,7 @@ const Home = () => {
       const guestSkus = JSON.parse(savedSkus);
 
       for (const sku of guestSkus) {
-        if (sku._id && !sku._id.startsWith("guest-")) {
-          continue;
-        }
+        if (sku._id && !sku._id.startsWith("guest-")) continue;
 
         const response = await API.post("/materials", {
           name: sku.name,
@@ -124,7 +136,6 @@ const Home = () => {
     }
   };
 
-  // Show skeleton while loading
   if (isLoading && !hasInitialized) {
     return <HomeSkeleton />;
   }
@@ -145,9 +156,7 @@ const Home = () => {
           yieldPerTon: newMaterial.yieldPerTon,
         });
         const material = response.data?.material;
-        if (material) {
-          setSkus((prev) => [...prev, material]);
-        }
+        if (material) setSkus((prev) => [...prev, material]);
       } catch (err) {
         console.error("Failed to add material:", err);
       }
@@ -172,9 +181,7 @@ const Home = () => {
   };
 
   const handlePersistRowUpdates = async (item) => {
-    if (!isAuthenticated) {
-      return;
-    }
+    if (!isAuthenticated) return;
 
     try {
       const response = await API.put(`/materials/${item._id}`, {
@@ -233,17 +240,30 @@ const Home = () => {
         })),
       });
       const snapshot = response.data?.snapshot;
-      if (snapshot) {
-        setHistory((prev) => [snapshot, ...prev]);
-      }
+      if (snapshot) setHistory((prev) => [snapshot, ...prev]);
     } catch (err) {
       console.error("Failed to save snapshot:", err);
     }
   };
 
-  const handleSignOut = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/";
+  // FIX — Call the logout endpoint to clear the HttpOnly cookie and
+  // invalidate the refresh token server-side, then clear in-memory token.
+  const handleSignOut = async () => {
+    try {
+      await API.post("/auth/logout");
+    } catch (err) {
+      // Even if the server call fails, clear local state.
+      console.error("Logout error:", err);
+    } finally {
+      clearAccessToken();
+      setIsAuthenticated(false);
+      setUser({
+        username: "Guest",
+        image: "/assets/default-avatar.png",
+        role: "Guest User",
+      });
+      navigate("/", { replace: true });
+    }
   };
 
   const filteredSkus = skus.filter((item) =>
@@ -252,7 +272,6 @@ const Home = () => {
 
   return (
     <div className="app-wrapper">
-      {/* Overlay */}
       {isSidebarOpen && (
         <div
           style={{
@@ -284,12 +303,21 @@ const Home = () => {
               viewBox="0 0 24 24"
               style={{ width: "24px", height: "24px" }}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
+              {isSidebarOpen ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              )}
             </svg>
           </button>
           <h1 className="header-title">Wholesale Pricing Engine</h1>
@@ -301,22 +329,6 @@ const Home = () => {
           >
             {isAuthenticated ? "Logged In" : "Guest Mode"}
           </span>
-          {isAuthenticated && (
-            <button
-              onClick={handleSignOut}
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                color: "#666",
-                fontSize: "0.9rem",
-                textDecoration: "underline",
-              }}
-              title="Sign out"
-            >
-              Sign Out
-            </button>
-          )}
         </nav>
       </header>
 
@@ -406,7 +418,7 @@ const Home = () => {
               <table className="matrix-table">
                 <thead>
                   <tr className="table-head-row">
-                    <th>Material</th>
+                    <th className="w-yield">Material</th>
                     <th className="w-yield">Yield Per Ton</th>
                     <th className="w-price">Unit Price</th>
                     <th className="w-actions">Actions</th>
@@ -421,7 +433,7 @@ const Home = () => {
                         <td>
                           <input
                             type="text"
-                            placeholder="e.g. 16mm Steel Rod"
+                            placeholder="e.g Height"
                             value={item.name}
                             onChange={(e) =>
                               handleRowChange(item._id, "name", e.target.value)
@@ -459,8 +471,24 @@ const Home = () => {
                           <button
                             onClick={() => handleDeleteRow(item._id)}
                             className="btn-delete"
+                            title="delete material"
                           >
-                            Remove
+                            <svg
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M3 6h18" />
+                              <path d="M8 6V4h8v2" />
+                              <path d="M19 6l-1 14H6L5 6" />
+                              <path d="M10 11v6" />
+                              <path d="M14 11v6" />
+                            </svg>
                           </button>
                         </td>
                       </tr>
@@ -556,10 +584,7 @@ const Home = () => {
               <>
                 <div className="account-profile-trigger">
                   <img
-                    src={
-                      user.image ||
-                      "https://cdn-icons-png.flaticon.com/512/847/847969.png"
-                    }
+                    src={user.image || "/assets/default-avatar.png"}
                     alt="User Avatar"
                     className="account-avatar"
                   />
@@ -569,6 +594,22 @@ const Home = () => {
                       <span className="badge-pulse"></span>
                       {user.role}
                     </span>
+                  </div>
+                  <div>
+                    <button
+                      onClick={handleSignOut}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        color: "#666",
+                        fontSize: "0.9rem",
+                        textDecoration: "underline",
+                      }}
+                      title="Sign out"
+                    >
+                      Sign Out
+                    </button>
                   </div>
                 </div>
 
@@ -627,7 +668,7 @@ const Home = () => {
                     cursor: "pointer",
                   }}
                 >
-                  Create Account
+                  Create a new account
                 </button>
               </div>
             )}

@@ -1,7 +1,7 @@
 import { GoogleLogin } from "@react-oauth/google";
 import { isGoogleAuthConfigured } from "../config/googleAuth";
 
-const GoogleSignIn = ({ onSuccess, onError }) => {
+const GoogleSignIn = ({ onSuccess, onError, disabled }) => {
   if (!isGoogleAuthConfigured()) {
     return (
       <p
@@ -19,19 +19,28 @@ const GoogleSignIn = ({ onSuccess, onError }) => {
   }
 
   return (
-    <GoogleLogin
-      onSuccess={(credentialResponse) => {
-        onSuccess({ credential: credentialResponse.credential });
+    <div
+      style={{
+        width: "100%",
+        pointerEvents: disabled ? "none" : "auto",
+        opacity: disabled ? 0.6 : 1,
+        transition: "opacity 0.2s ease",
       }}
-      onError={onError}
-      useOneTap={false}
-      theme="outline" // Clean white background with border
-      shape="rectangular" // Matches your inputs (or change to "pill" if desired)
-      size="large" // Gives it maximum height (40px)
-      width="100%" // ⚡ Forces the native button to fill the container 100%
-      text="signin_with" // Tells it to cleanly display "Sign in with Google"
-      logo_alignment="left" // Keeps the 'G' logo perfectly aligned on the left
-    />
+    >
+      <GoogleLogin
+        onSuccess={(credentialResponse) => {
+          onSuccess({ credential: credentialResponse.credential });
+        }}
+        onError={onError}
+        useOneTap={false}
+        theme="outline"
+        shape="rectangular"
+        size="large"
+        width="100%"
+        text="signin_with"
+        logo_alignment="left"
+      />
+    </div>
   );
 };
 
