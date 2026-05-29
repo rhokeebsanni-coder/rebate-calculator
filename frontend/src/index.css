@@ -542,12 +542,6 @@ body {
   transform: translateX(100%);
 }
 
-@media (min-width: 768px) {
-  .sidebar-closed {
-    width: 0;
-    transform: translateX(0);
-  }
-}
 
 .history-section {
   padding: 1.5rem;

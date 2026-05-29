@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
-import API from "./api/products.js";
+import API, { setAccessToken } from "./api/products.js";
 
 const PublicRoute = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -11,12 +11,10 @@ const PublicRoute = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // Attempt to fetch user data. If successful, user is authenticated.
-        // The API interceptor will attach the in-memory access token and handle refreshes.
-        await API.get("/auth/me");
+        const { data } = await API.post("/auth/refresh-token");
+        setAccessToken(data.accessToken);
         setIsAuthenticated(true);
       } catch {
-        // Request failed (no valid token), so allow access to public routes
         setIsAuthenticated(false);
       }
     };

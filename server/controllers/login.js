@@ -59,7 +59,7 @@ const login = async (req, res) => {
   }
 
   const user = await User.findOne({ email, isActive: true }).select(
-    "+password +failedLoginAttempts +lockedUntil +refreshJti",
+    "+email +password +failedLoginAttempts +lockedUntil +refreshJti",
   );
 
   if (!user || !user.password) {

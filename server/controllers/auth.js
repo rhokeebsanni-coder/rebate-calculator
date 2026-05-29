@@ -51,7 +51,7 @@ const verifyEmail = async (req, res) => {
 
   // FIX — Select the OTP fields that are hidden by default (select: false).
   const user = await User.findOne({ email }).select(
-    "+verificationOTP +otpExpiresAt +otpSentAt",
+    " +email +verificationOTP +otpExpiresAt +otpSentAt",
   );
 
   // FIX — Return the same error for not-found and already-verified to avoid
@@ -95,7 +95,7 @@ const resendOTP = async (req, res) => {
 
   // FIX — Select hidden OTP fields needed for cooldown check.
   const user = await User.findOne({ email }).select(
-    "+otpSentAt +verificationOTP +otpExpiresAt",
+    "+email +otpSentAt +verificationOTP +otpExpiresAt",
   );
 
   // FIX — Don't reveal whether the email exists; return the same response

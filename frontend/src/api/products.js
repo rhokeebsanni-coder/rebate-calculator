@@ -1,4 +1,4 @@
-// api/index.js
+// api/product.js
 import axios from "axios";
 
 let isRefreshing = false;

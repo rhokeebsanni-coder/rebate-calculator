@@ -114,17 +114,17 @@ UserSchema.index({ createdAt: -1 });
 // and let the hook handle it. The fragile isAlreadyHashed check is gone.
 // FIX #3 — Standardised on BCRYPT_ROUNDS (12) everywhere.
 // FIX #10 — Explicit next parameter for compatibility.
-UserSchema.pre("save", async function (next) {
+UserSchema.pre("save", async function () {
   if (this.googleId === "") {
     this.googleId = undefined;
   }
 
   if (!this.isModified("password") || !this.password) {
-    return next();
+    return 
   }
 
   this.password = await bcrypt.hash(this.password, BCRYPT_ROUNDS);
-  return next();
+  
 });
 
 module.exports = mongoose.model("User", UserSchema);

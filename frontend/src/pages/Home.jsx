@@ -223,7 +223,6 @@ const Home = () => {
   const handleLogCalculation = async () => {
     setIsSidebarOpen(true);
     if (!isAuthenticated) {
-      navigate("/login");
       return;
     }
 
@@ -387,7 +386,7 @@ const Home = () => {
                 <button
                   onClick={handleLogCalculation}
                   className="btn-secondary"
-                  disabled={isLoading || !isAuthenticated}
+                  disabled={isLoading}
                   title={!isAuthenticated ? "Sign in to save snapshots" : ""}
                 >
                   💾 Save Snapshot
@@ -409,7 +408,7 @@ const Home = () => {
                     <th className="w-yield">Material</th>
                     <th className="w-yield">Yield Per Ton</th>
                     <th className="w-price">Unit Price</th>
-                    <th className="w-actions">Actions</th>
+                    <th className="w-actions"></th>
                   </tr>
                 </thead>
                 <tbody>

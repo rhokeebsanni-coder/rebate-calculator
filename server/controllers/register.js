@@ -8,12 +8,19 @@ const { sendVerificationEmail } = require("./auth.js");
 // Replace with a Redis-backed solution (e.g. express-rate-limit + rate-limit-redis)
 // in production for persistence across restarts and multiple instances.
 const registrationAttempts = new Map();
+//Creates an in-memory storage containing the ip,count, and when we started.
 const MAX_ATTEMPTS = 5;
 const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
 
 const isRateLimited = (ip) => {
   const now = Date.now();
   const entry = registrationAttempts.get(ip);
+  //{
+  //   "192.168.1.1": {
+  //       count: 3,
+  //       windowStart: 123456789
+  //   }
+  // }
 
   if (!entry || now - entry.windowStart > WINDOW_MS) {
     registrationAttempts.set(ip, { count: 1, windowStart: now });
@@ -89,16 +96,9 @@ const register = async (req, res) => {
     );
   }
 
-  const existingUser = await User.findOne({ email });
+  const existingUser = await User.findOne({ email }).select("+email");
 
   if (existingUser) {
-    // FIX #2 — No longer silently linking a password to a Google account
-    // on registration. If an OAuth-only account needs a password, that flow
-    // should live behind an authenticated endpoint (e.g. PATCH /account/set-password)
-    // where the user is already logged in and their identity is confirmed.
-    //
-    // FIX #7 — Return a generic 409 regardless of whether the account uses
-    // Google OAuth or has a password, to avoid leaking account state.
     throw new CustomError("Email already registered.", 409);
   }
 
@@ -109,14 +109,11 @@ const register = async (req, res) => {
   const otpExpiresAt = Date.now() + 15 * 60 * 1000;
   const otpSentAt = Date.now();
 
-  // FIX #1 — Hash the password before persisting. Previously `password` was
-  // stored as plaintext; now we store only the bcrypt hash.
-  const hashedPassword = await bcrypt.hash(password, 12);
 
   const user = await User.create({
     email,
     username,
-    password: hashedPassword, // FIX #1 — Store hash, not raw password.
+    password, // FIX #1 — Store hash, not raw password.
     isVerified: false,
     verificationOTP: hashedOtp,
     otpExpiresAt,
@@ -133,7 +130,7 @@ const register = async (req, res) => {
       error: mailError?.message,
     });
 
-    await User.deleteOne({ _id: user._id });
+    
     throw new CustomError("Failed to send verification email.", 500);
   }
 

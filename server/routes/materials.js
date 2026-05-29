@@ -2,7 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middleware/authMiddleware.js");
-const asyncHandler = require("../middleware/asyncHandler.js");
+
 
 const {
   createMaterial,
@@ -13,9 +13,9 @@ const {
 
 router.use(authMiddleware);
 
-router.get("/", asyncHandler(getMaterials));
-router.post("/", asyncHandler(createMaterial));
-router.put("/:id", asyncHandler(updateMaterial));
-router.delete("/:id", asyncHandler(deleteMaterial));
+router.get("/", getMaterials);
+router.post("/", createMaterial);
+router.put("/:id", updateMaterial);
+router.delete("/:id", deleteMaterial);
 
 module.exports = router;

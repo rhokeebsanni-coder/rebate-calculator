@@ -48,14 +48,15 @@ const Register = () => {
           email={email}
           password={password}
           onVerificationSuccess={async () => {
-            setRequiresVerification(false);
             try {
               const response = await API.post("/auth/login", {
                 email,
                 password,
               });
-              // FIX — memory only, no localStorage.
+
               setAccessToken(response.data.accessToken);
+
+              setRequiresVerification(false);
               navigate("/", { replace: true });
             } catch (err) {
               console.error("Auto-login failed:", err);

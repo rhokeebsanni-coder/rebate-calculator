@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/users.js");
 const CustomError = require("../errors/custom-error.js");
 
-const authMiddleware = async (req, res, next) => {
+const authMiddleware = async (req, res) => {
   // Support both Authorization header and HttpOnly cookie.
   // Header takes precedence for API clients; cookie for browser clients.
   let token;
@@ -15,7 +15,7 @@ const authMiddleware = async (req, res, next) => {
   }
 
   if (!token) {
-    return next(new CustomError("No token provided.", 401));
+    throw new CustomError("No token provided.", 401);
   }
 
   try {
@@ -26,25 +26,25 @@ const authMiddleware = async (req, res, next) => {
     const user = await User.findOne({ _id: decoded.userId, isActive: true });
 
     if (!user) {
-      return next(new CustomError("Account not found or deactivated.", 401));
+      throw new CustomError("Account not found or deactivated.", 401);
     }
 
     // Verify the user is verified — unverified users should not access
     // protected routes even with a valid token.
     if (!user.isVerified) {
-      return next(new CustomError("Account not verified.", 403));
+      throw new CustomError("Account not verified.", 403);
     }
 
     // Attach minimal identity to req — never the full user document.
     req.user = { userId: decoded.userId };
 
-    next();
+    
   } catch (error) {
     // Distinguish expiry from other errors for clearer client handling.
     if (error.name === "TokenExpiredError") {
-      return next(new CustomError("Token expired.", 401));
+      throw new CustomError("Token expired.", 401);
     }
-    return next(new CustomError("Invalid token.", 401));
+    throw new CustomError("Invalid token.", 401);
   }
 };
 

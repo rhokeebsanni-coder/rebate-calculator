@@ -1,3 +1,4 @@
+// must be before any other require
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -12,11 +13,12 @@ const errorHandlerMiddleware = require("./middleware/error-handler.js");
 const connectDB = require("./db/connect.js");
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = "https://rebate-calculator.onrender.com" || 5000;
 
 const requiredEnvVars = [
   "MONGO_URI",
   "JWT_SECRET",
+  "JWT_REFRESH_SECRET", // add this
   "GOOGLE_CLIENT_ID",
   "RESEND_API_KEY",
 ];
@@ -44,6 +46,10 @@ app.use("/api/v1/snapshots", snapshotRouter);
 app.use("/api/v1/materials", materialsRouter);
 
 app.use(notFound);
+app.use((err, req, res, next) => {
+  console.error("RAW ERROR:", err);
+  res.status(500).json({ message: err.message, stack: err.stack });
+});
 app.use(errorHandlerMiddleware);
 
 const start = async () => {
