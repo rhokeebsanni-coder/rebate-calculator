@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api/products";
 import HomeSkeleton from "../components/HomeSkeleton";
+import { useAuth } from "../context/AuthContext";
 
 const Home = () => {
+  const { user, isAuthenticated, isAuthLoading, logout } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [skus, setSkus] = useState([]);
   const [grossTotal, setGrossTotal] = useState("");
@@ -12,14 +14,7 @@ const Home = () => {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 768);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [hasInitialized, setHasInitialized] = useState(false);
 
-  const [user, setUser] = useState({
-    username: "Guest",
-    image: "https://cdn-icons-png.flaticon.com/512/847/847969.png",
-    role: "Guest User",
-  });
 
   const navigate = useNavigate();
 
@@ -27,64 +22,38 @@ const Home = () => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const token = localStorage.getItem("token");
 
-        if (token) {
-          const results = await Promise.allSettled([
-            API.get("/auth/me"),
-            API.get("/materials"),
-            API.get("/snapshots"),
-          ]);
+        // DELETE the localStorage token check — not needed anymore
+        // The context already confirmed auth before this runs
 
-          if (results[0].status === "fulfilled") {
-            const userData = results[0].value.data?.user;
-            if (userData) {
-              setUser({
-                username: userData.username || "Unknown",
-                image:
-                  userData.image ||
-                  "https://cdn-icons-png.flaticon.com/512/847/847969.png",
-                role: userData.role || "System Operator",
-              });
-              setIsAuthenticated(true);
-            }
-          }
+        const results = await Promise.allSettled([
+          API.get("/materials"),
+          API.get("/snapshots"),
+        ]);
 
-          if (results[1].status === "fulfilled") {
-            setSkus(results[1].value.data?.materials || []);
-          } else {
-            const savedSkus = localStorage.getItem("guestSkus");
-            if (savedSkus) {
-              setSkus(JSON.parse(savedSkus));
-            }
-          }
-
-          if (results[2].status === "fulfilled") {
-            setHistory(results[2].value.data?.snapshots || []);
-          }
-
-          await savePendingMaterials(
-            results[1].status === "fulfilled"
-              ? results[1].value.data?.materials || []
-              : [],
-          );
+        if (results[0].status === "fulfilled") {
+          setSkus(results[0].value.data?.materials || []);
         } else {
-          setIsAuthenticated(false);
           const savedSkus = localStorage.getItem("guestSkus");
-          if (savedSkus) {
-            setSkus(JSON.parse(savedSkus));
-          }
+          if (savedSkus) setSkus(JSON.parse(savedSkus));
+        }
+
+        if (results[1].status === "fulfilled") {
+          setHistory(results[1].value.data?.snapshots || []);
+        }
+
+        if (isAuthenticated) {
+          await savePendingMaterials(results[0].value?.data?.materials || []);
         }
       } catch (err) {
         console.error("Failed to fetch data:", err);
       } finally {
         setIsLoading(false);
-        setHasInitialized(true);
       }
     };
 
-    fetchData();
-  }, []);
+    if (!isAuthLoading) fetchData(); // wait for auth before fetching
+  }, [isAuthLoading, isAuthenticated]);
 
   useEffect(() => {
     if (!isAuthenticated && skus.length > 0) {
@@ -139,7 +108,7 @@ const Home = () => {
     }
   };
 
-  if (isLoading && !hasInitialized) {
+  if (isAuthLoading || isLoading) {
     return <HomeSkeleton />;
   }
 
@@ -254,8 +223,8 @@ const Home = () => {
     }
   };
 
-  const handleSignOut = () => {
-    localStorage.removeItem("token");
+  const handleSignOut = async () => {
+    await logout();
     window.location.href = "/";
   };
 

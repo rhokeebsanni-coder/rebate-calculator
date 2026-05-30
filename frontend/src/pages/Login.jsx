@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import API, { setAccessToken } from "../api/products";
 import VerifyOTP from "../components/VerifyOTP";
 import GoogleSignIn from "../components/GoogleSignIn";
+import { useAuth } from "../context/AuthContext";
 import "../Login.css";
 
 const Login = () => {
@@ -17,6 +18,8 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  const { login } = useAuth();
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -196,8 +199,7 @@ const Login = () => {
                 const response = await API.post("/auth/google", {
                   credential: credentialResponse.credential,
                 });
-                // FIX — same as above, memory only.
-                setAccessToken(response.data.accessToken);
+                login(response.data.accessToken, response.data.user); // ← replaces setAccessToken()
                 navigate("/", { replace: true });
               } catch (error) {
                 setError(

@@ -13,7 +13,7 @@ const errorHandlerMiddleware = require("./middleware/error-handler.js");
 const connectDB = require("./db/connect.js");
 
 const app = express();
-const port = "https://rebate-calculator.onrender.com" || 5000;
+const port = process.env.PORT || 5000;
 
 const requiredEnvVars = [
   "MONGO_URI",
