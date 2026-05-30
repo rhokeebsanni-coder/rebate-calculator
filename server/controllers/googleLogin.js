@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const User = require("../models/users.js");
 const { OAuth2Client } = require("google-auth-library");
 const CustomError = require("../errors/custom-error.js");
@@ -62,13 +63,30 @@ const googleLogin = async (req, res) => {
     throw new CustomError("Account has been deactivated.", 403);
   }
 
-  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "1d",
+  const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    expiresIn: "15m",
+  });
+
+  const refreshJti = crypto.randomUUID();
+  const newRefreshToken = jwt.sign(
+    { userId: user._id, jti: refreshJti },
+    process.env.JWT_REFRESH_SECRET,
+    { expiresIn: "7d" },
+  );
+
+  user.refreshJti = refreshJti;
+  await user.save();
+
+  res.cookie("refreshToken", newRefreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
   res.status(200).json({
     success: true,
-    token,
+    accessToken,
     user: {
       id: user._id,
       username: user.username,
