@@ -14,12 +14,11 @@ const Login = () => {
   const [successMsg, setSuccessMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [requiresVerification, setRequiresVerification] = useState(false);
-  
 
   const navigate = useNavigate();
 
   const { login } = useAuth();
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -32,9 +31,8 @@ const Login = () => {
       if (response.data?.requiresVerification) {
         setRequiresVerification(true);
       } else {
-        // FIX — store access token in memory, not localStorage.
-        // The refresh token is handled automatically via HttpOnly cookie.
         setAccessToken(response.data.accessToken);
+        login(response.data.accessToken, response.data.user);
         navigate("/", { replace: true });
       }
     } catch (error) {
