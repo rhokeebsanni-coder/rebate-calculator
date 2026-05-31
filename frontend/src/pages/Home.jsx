@@ -15,7 +15,6 @@ const Home = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 768);
   const [isLoading, setIsLoading] = useState(true);
 
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,13 +22,17 @@ const Home = () => {
       try {
         setIsLoading(true);
 
-        // DELETE the localStorage token check — not needed anymore
-        // The context already confirmed auth before this runs
+        // Add timeout to prevent hanging on API calls
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Fetch timeout")), 10000),
+        );
 
-        const results = await Promise.allSettled([
+        const apiPromise = Promise.allSettled([
           API.get("/materials"),
           API.get("/snapshots"),
         ]);
+
+        const results = await Promise.race([apiPromise, timeoutPromise]);
 
         if (results[0].status === "fulfilled") {
           setSkus(results[0].value.data?.materials || []);

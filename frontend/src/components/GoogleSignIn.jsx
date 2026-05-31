@@ -19,14 +19,7 @@ const GoogleSignIn = ({ onSuccess, onError, disabled }) => {
   }
 
   return (
-    <div
-      style={{
-        width: "100%",
-        pointerEvents: disabled ? "none" : "auto",
-        opacity: disabled ? 0.6 : 1,
-        transition: "opacity 0.2s ease",
-      }}
-    >
+    
       <GoogleLogin
         onSuccess={(credentialResponse) => {
           onSuccess({ credential: credentialResponse.credential });
@@ -34,13 +27,12 @@ const GoogleSignIn = ({ onSuccess, onError, disabled }) => {
         onError={onError}
         useOneTap={false}
         theme="outline"
-        shape="rectangular"
+        shape="pill"
         size="large"
         width="100%"
         text="signin_with"
         logo_alignment="left"
       />
-    </div>
   );
 };
 

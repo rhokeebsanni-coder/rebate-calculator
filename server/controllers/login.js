@@ -166,12 +166,7 @@ const login = async (req, res) => {
   user.refreshJti = refreshJti;
   await user.save();
 
-  res.cookie("refreshToken", newRefreshToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "Lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
+
 
   console.info("[login] Successful login:", {
     userId: user._id,
@@ -179,16 +174,18 @@ const login = async (req, res) => {
     timestamp: new Date().toISOString(),
   });
 
+  // Replace the cookie line and response at the bottom with:
   res.status(200).json({
     success: true,
     requiresVerification: false,
     accessToken,
+    refreshToken: newRefreshToken, // ← send in body instead of cookie
     user: {
       id: user._id,
       username: user.username,
       image: user.image,
     },
   });
-};
+};;
 
 module.exports = login;

@@ -4,7 +4,7 @@ const User = require("../models/users.js");
 const CustomError = require("../errors/custom-error.js");
 
 const refreshToken = async (req, res) => {
-  const token = req.cookies?.refreshToken;
+  const token = req.body.refreshToken; // ← from body now
 
   if (!token) {
     throw new CustomError("No refresh token provided.", 401);
@@ -52,18 +52,13 @@ const refreshToken = async (req, res) => {
   user.refreshJti = newJti;
   await user.save();
 
-  res.cookie("refreshToken", newRefreshToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "Lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
-
-  res.status(200).json({ success: true, accessToken });
+  res
+    .status(200)
+    .json({ success: true, accessToken, refreshToken: newRefreshToken });
 };
 
 const logout = async (req, res) => {
-  const token = req.cookies?.refreshToken;
+  const token = req.body.refreshToken;
 
   if (token) {
     try {
@@ -71,16 +66,8 @@ const logout = async (req, res) => {
       await User.findByIdAndUpdate(decoded.userId, { refreshJti: null }).select(
         "+refreshJti",
       );
-    } catch (_) {
-      // Token already invalid — still clear the cookie
-    }
+    } catch (_) {}
   }
-
-  res.clearCookie("refreshToken", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "Lax",
-  });
 
   res.status(200).json({ success: true, message: "Logged out." });
 };

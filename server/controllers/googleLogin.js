@@ -77,16 +77,12 @@ const googleLogin = async (req, res) => {
   user.refreshJti = refreshJti;
   await user.save();
 
-  res.cookie("refreshToken", newRefreshToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "Lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
+  
 
   res.status(200).json({
     success: true,
     accessToken,
+    refreshToken: newRefreshToken, // ← send in body
     user: {
       id: user._id,
       username: user.username,

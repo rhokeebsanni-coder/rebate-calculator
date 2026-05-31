@@ -10,13 +10,13 @@ import API, { setAccessToken, clearAccessToken } from "../api/products";
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // null = unknown, false = guest
+  const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // true until silent refresh resolves
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Called after login / google sign-in
-  const login = useCallback((accessToken, userData) => {
+  const login = useCallback((accessToken, refreshToken, userData) => {
     setAccessToken(accessToken);
+    localStorage.setItem("refreshToken", refreshToken);
     setUser(userData);
     setIsAuthenticated(true);
   }, []);
@@ -30,19 +30,28 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
   }, []);
 
-  // On every app load, try to restore the session silently via the
-  // HttpOnly refresh token cookie — this is what replaces localStorage.
   useEffect(() => {
     const restoreSession = async () => {
+      const storedRefreshToken = localStorage.getItem("refreshToken");
+
+      if (!storedRefreshToken) {
+        setIsAuthenticated(false);
+        setIsLoading(false);
+        return;
+      }
+
       try {
-        const { data } = await API.post("/auth/refresh-token");
+        const { data } = await API.post("/auth/refresh-token", {
+          refreshToken: storedRefreshToken,
+        });
         setAccessToken(data.accessToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
 
         const { data: meData } = await API.get("/auth/me");
         setUser(meData.user);
         setIsAuthenticated(true);
-      } catch (_) {
-        // No valid session — stay as guest
+      } catch {
+        clearAccessToken();
         setIsAuthenticated(false);
       } finally {
         setIsLoading(false);
@@ -50,8 +59,6 @@ export const AuthProvider = ({ children }) => {
     };
 
     restoreSession();
-
-    // Listen for forced logouts from the axios interceptor
     window.addEventListener("auth:logout", logout);
     return () => window.removeEventListener("auth:logout", logout);
   }, [logout]);
