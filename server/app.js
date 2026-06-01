@@ -13,7 +13,7 @@ const errorHandlerMiddleware = require("./middleware/error-handler.js");
 const connectDB = require("./db/connect.js");
 
 const app = express();
-const port =  5000;
+const port = 5000;
 
 const requiredEnvVars = [
   "MONGO_URI",
@@ -33,7 +33,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://rebate-calculator-amber.vercel.app",
+      "https://your-app.vercel.app", // replace this after frontend is deployed
     ],
     credentials: true,
   }),
