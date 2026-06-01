@@ -32,7 +32,7 @@ const Login = () => {
         setRequiresVerification(true);
       } else {
         setAccessToken(response.data.accessToken);
-        login(response.data.accessToken, response.data.user);
+        login(response.data.accessToken, response.data.refreshToken, response.data.user);
         navigate("/", { replace: true });
       }
     } catch (error) {
@@ -197,7 +197,7 @@ const Login = () => {
                 const response = await API.post("/auth/google", {
                   credential: credentialResponse.credential,
                 });
-                login(response.data.accessToken, response.data.user); // ← replaces setAccessToken()
+                login(response.data.accessToken, response.data.refreshToken, response.data.user);
                 navigate("/", { replace: true });
               } catch (error) {
                 setError(

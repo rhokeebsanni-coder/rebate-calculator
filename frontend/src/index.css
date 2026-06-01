@@ -446,11 +446,11 @@ body {
 /* --- SIDEBAR SYSTEM --- */
 .app-sidebar {
   position: fixed;
-  top: 60px; /* 📍 Pushes it exactly below your header height */
+  top: 60px;
   right: 0;
 
   width: min(85vw, 320px);
-  height: calc(100dvh - 60px); /* 📐 Subtracts header height so it doesn't overflow the viewport */
+  height: calc(100dvh - 60px);
 
   background-color: #fff;
   border-left: 1px solid #e5e5e5;
@@ -460,11 +460,13 @@ body {
   justify-content: space-between;
 
   transform: translateX(100%);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 50; /* Lower than header (100) so it rolls right under it */
+  transition: transform 0.3s ease;
+
+  z-index: 50;
   overflow: hidden;
   box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
 }
+
 .nav-actions {
   display: flex;
   align-items: center;
@@ -919,5 +921,31 @@ body {
     left: auto;
     right: 0;
     width: 260px;
+  }
+}
+@media (min-width: 768px) {
+  .app-sidebar {
+    position: relative;
+    top: 0;
+    right: 0;
+
+    width: 320px;
+    height: auto;
+
+    transform: none !important;
+    box-shadow: none;
+    flex-shrink: 0;
+  }
+
+  .sidebar-toggle-btn {
+    display: none;
+  }
+
+  .sidebar-overlay {
+    display: none !important;
+  }
+
+  .workspace-panel {
+    width: calc(100% - 320px);
   }
 }

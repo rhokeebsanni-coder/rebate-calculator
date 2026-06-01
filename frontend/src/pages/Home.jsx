@@ -12,7 +12,7 @@ const Home = () => {
   const [rebate, setRebate] = useState("");
   const [history, setHistory] = useState([]);
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 768);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
@@ -238,7 +238,7 @@ const Home = () => {
   return (
     <div className="app-wrapper">
       {/* Overlay — no inline display:none, CSS handles mobile-only visibility */}
-      {isSidebarOpen && (
+      {window.innerWidth < 768 && isSidebarOpen && (
         <div
           className="sidebar-overlay"
           onClick={() => setIsSidebarOpen(false)}
@@ -545,9 +545,7 @@ const Home = () => {
               <>
                 <div className="account-profile-trigger">
                   <img
-                    src={
-                      user.image
-                    }
+                    src={user.image}
                     alt="User Avatar"
                     className="account-avatar"
                   />

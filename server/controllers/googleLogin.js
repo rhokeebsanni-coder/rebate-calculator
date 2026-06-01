@@ -38,7 +38,7 @@ const googleLogin = async (req, res) => {
         throw new CustomError("Account has been deactivated.", 403);
       user.googleId = sub;
       user.isVerified = true;
-      if (!user.image) user.image = picture;
+      user.image = picture || user.image;
       await user.save();
     } else {
       const baseUsername = name || email.split("@")[0];
@@ -76,8 +76,6 @@ const googleLogin = async (req, res) => {
 
   user.refreshJti = refreshJti;
   await user.save();
-
-  
 
   res.status(200).json({
     success: true,
