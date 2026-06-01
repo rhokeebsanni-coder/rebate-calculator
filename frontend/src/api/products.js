@@ -9,8 +9,8 @@ const processQueue = (error) => {
 };
 
 const API = axios.create({
-  baseURL:
-     "http://localhost:5000/api/v1",
+  baseURL: import.meta.env.VITE_API_URL,
+  withCredentials: true,
 });
 
 let accessToken = localStorage.getItem("accessToken") || null;

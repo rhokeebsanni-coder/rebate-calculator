@@ -33,7 +33,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://your-app.vercel.app", // replace this after frontend is deployed
+      "https://wholesale-pricing-engine.vercel.app/",
     ],
     credentials: true,
   }),
