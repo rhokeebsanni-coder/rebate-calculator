@@ -60,7 +60,7 @@ const register = async (req, res) => {
     req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
     req.socket?.remoteAddress ||
     "unknown";
-
+  console.log("Client IP:", clientIp);
   if (isRateLimited(clientIp)) {
     throw new CustomError(
       "Too many registration attempts. Please try again later.",

@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = useCallback((accessToken, refreshToken, userData) => {
     setAccessToken(accessToken);
+    console.log("access token set")
     localStorage.setItem("refreshToken", refreshToken);
     setUser(userData);
     setIsAuthenticated(true);
@@ -24,7 +25,9 @@ export const AuthProvider = ({ children }) => {
   const logout = useCallback(async () => {
     try {
       await API.post("/auth/logout");
-    } catch (_) {}
+    } catch (error) {
+      console.log(error)
+    }
     clearAccessToken();
     setUser(null);
     setIsAuthenticated(false);

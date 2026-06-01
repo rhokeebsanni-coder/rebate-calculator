@@ -55,6 +55,7 @@ const Register = () => {
               });
 
               setAccessToken(response.data.accessToken);
+              console.log(accessToken)
 
               setRequiresVerification(false);
               navigate("/", { replace: true });

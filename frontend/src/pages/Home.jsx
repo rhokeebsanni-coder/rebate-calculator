@@ -546,8 +546,7 @@ const Home = () => {
                 <div className="account-profile-trigger">
                   <img
                     src={
-                      user.image ||
-                      "https://cdn-icons-png.flaticon.com/512/847/847969.png"
+                      user.image
                     }
                     alt="User Avatar"
                     className="account-avatar"
