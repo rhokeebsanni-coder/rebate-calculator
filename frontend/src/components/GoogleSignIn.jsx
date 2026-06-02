@@ -19,20 +19,19 @@ const GoogleSignIn = ({ onSuccess, onError, disabled }) => {
   }
 
   return (
-    
-      <GoogleLogin
-        onSuccess={(credentialResponse) => {
-          onSuccess({ credential: credentialResponse.credential });
-        }}
-        onError={onError}
-        useOneTap={false}
-        theme="outline"
-        shape="pill"
-        size="large"
-        width="100%"
-        text="signin_with"
-        logo_alignment="left"
-      />
+    <GoogleLogin
+      onSuccess={(credentialResponse) => {
+        onSuccess({ credential: credentialResponse.credential });
+      }}
+      onError={onError}
+      useOneTap={false}
+      iframeProps={{ title: "reCAPTCHA" }}
+      theme="outline"
+      shape="pill"
+      size="large"
+      text="continue_with"
+      logo_alignment="left"
+    />
   );
 };
 
