@@ -19,17 +19,18 @@ const GoogleSignIn = ({ onSuccess, onError, disabled }) => {
   }
 
   return (
-    <GoogleLogin
-      onSuccess={(credentialResponse) => {
-        onSuccess({ credential: credentialResponse.credential });
-      }}
-      onError={onError}
-      theme="filled_black"
-      shape="rectangular"
-      size="medium"
-      text="signin_with"
-      logo_alignment="right"
-    />
+    
+      <GoogleLogin
+        onSuccess={(credentialResponse) => {
+          onSuccess({ credential: credentialResponse.credential });
+        }}
+        onError={onError}
+        theme="outline"
+        shape="pill"
+        size="large"
+        text="signin_with"
+        logo_alignment="right"
+      />
   );
 };
 
