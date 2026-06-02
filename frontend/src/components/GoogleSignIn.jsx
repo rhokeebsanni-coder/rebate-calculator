@@ -24,13 +24,11 @@ const GoogleSignIn = ({ onSuccess, onError, disabled }) => {
         onSuccess({ credential: credentialResponse.credential });
       }}
       onError={onError}
-      useOneTap={false}
-      iframeProps={{ title: "reCAPTCHA" }}
-      theme="outline"
-      shape="pill"
-      size="large"
-      text="continue_with"
-      logo_alignment="left"
+      theme="filled_black"
+      shape="rectangular"
+      size="medium"
+      text="signin_with"
+      logo_alignment="right"
     />
   );
 };
