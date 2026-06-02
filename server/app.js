@@ -33,7 +33,8 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://wholesale-pricing-engine.vercel.app/",
+      "https://wholesale-pricing-engine.vercel.app",
+      "https://wholesale-pricing-engine.netlify.app",
     ],
     credentials: true,
   }),

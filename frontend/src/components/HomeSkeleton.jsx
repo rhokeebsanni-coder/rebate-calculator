@@ -1,7 +1,14 @@
 // components/HomeSkeleton.jsx
 const HomeSkeleton = () => {
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+        background: "#f5f5f5",
+      }}
+    >
       {/* Header skeleton */}
       <div
         style={{
@@ -40,8 +47,7 @@ const HomeSkeleton = () => {
         <div
           style={{
             flex: 1,
-            padding: "1.5rem", // Slightly reduced for cleaner mobile padding
-            overflow: "auto",
+            padding: "1.5rem",
             backgroundColor: "#f5f5f5",
           }}
         >
