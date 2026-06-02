@@ -300,7 +300,11 @@ const Home = () => {
                 <input
                   type="number"
                   value={grossTotal}
-                  onChange={(e) => setGrossTotal(Number(e.target.value))}
+                  onChange={(e) =>
+                    setGrossTotal(
+                      e.target.value === "" ? "" : Number(e.target.value),
+                    )
+                  }
                   className="financial-input"
                   disabled={isLoading}
                 />
@@ -310,7 +314,11 @@ const Home = () => {
                 <input
                   type="number"
                   value={rebate}
-                  onChange={(e) => setRebate(Number(e.target.value))}
+                  onChange={(e) =>
+                    setRebate(
+                      e.target.value === "" ? "" : Number(e.target.value),
+                    )
+                  }
                   className="financial-input"
                   disabled={isLoading}
                 />
