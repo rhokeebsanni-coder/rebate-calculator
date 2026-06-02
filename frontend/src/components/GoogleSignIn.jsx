@@ -1,4 +1,4 @@
-import { useGoogleLogin } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
 import { isGoogleAuthConfigured } from "../config/googleAuth";
 
 const GoogleSignIn = ({ onSuccess, onError, disabled }) => {
@@ -18,30 +18,21 @@ const GoogleSignIn = ({ onSuccess, onError, disabled }) => {
     );
   }
 
-  const login = useGoogleLogin({
-    flow: "implicit",
-    scope: "openid profile email",
-    prompt: "select_account",
-    onSuccess: (tokenResponse) => {
-      if (!tokenResponse.access_token) {
-        onError?.();
-        return;
-      }
-      onSuccess({ accessToken: tokenResponse.access_token });
-    },
-    onError,
-  });
-
   return (
-    <button
-      type="button"
-      className="google-custom-btn"
-      onClick={() => login()}
-      disabled={disabled}
-    >
-      <span className="google-custom-btn__icon">G</span>
-      <span className="google-custom-btn__label">Sign in with Google</span>
-    </button>
+    <GoogleLogin
+      onSuccess={(credentialResponse) => {
+        onSuccess({ credential: credentialResponse.credential });
+      }}
+      onError={onError}
+      theme="outline"
+      shape="pill"
+      size="large"
+      text="signin_with"
+      type="standard"
+      auto_select={false}
+      ux_mode="popup"
+      logo_alignment="right"
+    />
   );
 };
 
