@@ -7,16 +7,26 @@ const CustomError = require("../errors/custom-error.js");
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const googleLogin = async (req, res) => {
-  const { credential } = req.body;
+  const { credential, accessToken } = req.body;
 
-  if (!credential) {
+  if (!credential && !accessToken) {
     throw new CustomError("No credential token provided.", 400);
   }
 
   let payload;
   try {
-    const ticket = await client.verifyIdToken({ idToken: credential });
-    payload = ticket.getPayload();
+    if (credential) {
+      const ticket = await client.verifyIdToken({ idToken: credential });
+      payload = ticket.getPayload();
+    } else {
+      const { data } = await client.request({
+        url: "https://openidconnect.googleapis.com/v1/userinfo",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      payload = data;
+    }
   } catch {
     throw new CustomError("Invalid or expired Google token.", 401);
   }

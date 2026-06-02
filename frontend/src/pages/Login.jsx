@@ -195,7 +195,7 @@ const Login = () => {
             onSuccess={async (credentialResponse) => {
               try {
                 const response = await API.post("/auth/google", {
-                  credential: credentialResponse.credential,
+                  accessToken: credentialResponse.accessToken,
                 });
                 login(response.data.accessToken, response.data.refreshToken, response.data.user);
                 navigate("/", { replace: true });
