@@ -59,7 +59,7 @@ Capture the following on the main dashboard:
 - Navigation/sidebar if applicable
 
 ```
-<img src="screenshots/Dashboard.png" alt="Dashboard" >
+![Dashboard](https://github.com/rhokeebsanni/wholesale-pricing-engine/blob/866263f5016b0dd629bb70bb6dfafb80224860e4/dashboard.png)
 
 
 ```
