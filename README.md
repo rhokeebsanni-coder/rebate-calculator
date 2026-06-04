@@ -34,8 +34,9 @@ Capture the following on the login/register pages:
 - Consistent branding across both pages
 
 ```
-![Login](./screenshots/login.png)
-![Register](./screenshots/register.png)
+<img width="3840" height="2160" alt="register" src="https://github.com/user-attachments/assets/febc6733-0c57-4e10-89c7-0d7b32e57ff3" />
+<img width="3840" height="2160" alt="login" src="https://github.com/user-attachments/assets/092b8a9d-37e7-4db2-a614-baecc13ff8eb" />
+
 ```
 
 **Tips:**
@@ -56,7 +57,8 @@ Capture the following on the main dashboard:
 - Navigation/sidebar if applicable
 
 ```
-![Dashboard](./screenshots/dashboard.png)
+<img width="3840" height="2160" alt="dashboard" src="https://github.com/user-attachments/assets/de62ca89-4b6d-4534-8f6a-8fbc6def665c" />
+
 ```
 
 **Tips:**
