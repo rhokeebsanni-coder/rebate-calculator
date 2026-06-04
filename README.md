@@ -34,7 +34,7 @@ Capture the following on the login/register pages:
 - Consistent branding across both pages
 
 ![Login](https://github.com/rhokeebsanni/wholesale-pricing-engine/blob/866263f5016b0dd629bb70bb6dfafb80224860e4/login.png)
-![Register](https://github.com/rhokeebsanni/wholesale-pricing-engine/blob/866263f5016b0dd629bb70bb6dfafb80224860e4/Register.png)
+![Register](https://github.com/rhokeebsanni/wholesale-pricing-engine/blob/1959cf717d45f7b87449302eb0a5c17131e62e3e/register.png)
 
 **Tips:**
 - Show the login page at rest (no error states)
