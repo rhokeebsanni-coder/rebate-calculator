@@ -1,67 +1,114 @@
-Wholesale Pricing Engine
+# Wholesale Pricing Engine
 
 A full-stack wholesale pricing and rebate management application that helps businesses calculate unit pricing, manage materials, and track historical pricing snapshots.
 
-Live Demo
+## 🚀 Live Demo
 
-🚀 Live Application: [Add your Vercel URL here]
+**Live Application:** [Add your Vercel URL here]
 
-Screenshots
-Dashboard
+---
 
-Add a screenshot of:
+## 📸 Screenshots
 
-Gross Total
-Rebate
-Material table
-Unit price calculations
+### How to Take Professional Screenshots
+
+Before capturing, set up your browser properly:
+
+- Use a clean browser profile with no personal bookmarks or extensions visible
+- Set zoom to **100%** and window width to **1440px**
+- Clear any test/placeholder data from the UI
+- Use Chrome DevTools (`Ctrl+Shift+P` → "Capture screenshot") for full-page captures
+- Export as **PNG** (lossless, sharp text)
+- Frame screenshots using **Shots.so** or **Figma** device frames for a polished look
+
+---
+
+### Authentication
+
+Capture the following on the login/register pages:
+
+- Login form with email and password fields
+- "Sign in with Google" button
+- Register form with name, email, and password fields
+- Clean, minimal UI with no errors shown
+- Consistent branding across both pages
+
+```
+![Login](./screenshots/login.png)
+![Register](./screenshots/register.png)
+```
+
+**Tips:**
+- Show the login page at rest (no error states)
+- Make sure the Google OAuth button is fully visible
+- Capture register page separately to show the full onboarding flow
+
+---
+
+### Dashboard — Wholesale Pricing Engine
+
+Capture the following on the main dashboard:
+
+- Gross Total display (prominently visible)
+- Rebate value and calculation
+- Material table with at least 2–3 rows of data
+- Unit price calculations column
+- Navigation/sidebar if applicable
+
+```
 ![Dashboard](./screenshots/dashboard.png)
-Calculation History
+```
 
-Add a screenshot showing:
+**Tips:**
+- Pre-fill the dashboard with realistic dummy data (e.g. Steel Rods, Aluminum Sheets)
+- Make sure Gross Total and Rebate values are non-zero so the calculation logic is visible
+- Capture at full width so the material table isn't truncated
 
-Sidebar
-Saved snapshots
-User account section
-![History](./screenshots/history.png)
-Authentication
+---
 
-Add a screenshot showing:
+## ✨ Features
 
-Login page
-Google Sign-In
-Clean UI
-![Authentication](./screenshots/login.png)
-Features
-User authentication with JWT
-Google OAuth Sign-In
-Email verification with OTP
-Material CRUD operations
-Real-time rebate calculations
-Snapshot history tracking
-Protected API routes
-Responsive design
-Tech Stack
-Frontend
-React
-React Router
-Axios
-Vite
-Backend
-Node.js
-Express.js
-MongoDB
-Mongoose
-Authentication & Security
-JWT
-Google OAuth
-Bcrypt
-OTP Email Verification
-Deployment
-Vercel (Frontend)
-Render (Backend)
-MongoDB Atlas (Database)
-Architecture
+- User authentication with JWT
+- Google OAuth Sign-In
+- Email verification with OTP
+- Material CRUD operations
+- Real-time rebate calculations
+- Snapshot history tracking
+- Protected API routes
+- Responsive design
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+- React
+- React Router
+- Axios
+- Vite
+
+### Backend
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+
+### Authentication & Security
+- JWT
+- Google OAuth
+- Bcrypt
+- OTP Email Verification
+
+### Deployment
+- Vercel (Frontend)
+- Render (Backend)
+- MongoDB Atlas (Database)
+
+---
+
+## 🏗 Architecture
+
+```
 React Frontend
        │
        ▼
@@ -69,37 +116,46 @@ Express API
        │
        ▼
 MongoDB Atlas
-Key Technical Challenges Solved
-Authentication Persistence
+```
 
+---
+
+## 🔑 Key Technical Challenges Solved
+
+**Authentication Persistence**
 Implemented automatic session restoration using JWT access tokens and refresh tokens.
 
-OAuth Integration
-
+**OAuth Integration**
 Integrated Google Sign-In with account linking and profile synchronization.
 
-Protected Routes
-
+**Protected Routes**
 Built middleware-based authentication for securing user-specific resources.
 
-Snapshot System
-
+**Snapshot System**
 Designed a history tracking system that stores rebate calculations for future reference.
 
-Local Setup
-git clone https://github.com/rhokeebsanni/rebate-calculator.git
+---
 
+## ⚙️ Local Setup
+
+**Frontend:**
+```bash
+git clone https://github.com/rhokeebsanni/rebate-calculator.git
 cd frontend
 npm install
 npm run dev
+```
 
-Backend:
-
+**Backend:**
+```bash
 cd server
 npm install
 npm run dev
-Author
+```
 
-Rhokeeb Sanni
+---
 
-GitHub: @rhokeebsanni
+## 👤 Author
+
+**Rhokeeb Sanni**
+GitHub: [@rhokeebsanni](https://github.com/rhokeebsanni)
