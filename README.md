@@ -34,8 +34,8 @@ Capture the following on the login/register pages:
 - Consistent branding across both pages
 
 ```
-<img src="screenshots/login.png" alt="Login" >
-<img src="screenshots/register.png" alt="Register" >
+<img src="screenshots/Login.png" alt="Login" >
+<img src="screenshots/Register.png" alt="Register" >
 
 
 
@@ -59,7 +59,7 @@ Capture the following on the main dashboard:
 - Navigation/sidebar if applicable
 
 ```
-<img src="screenshots/dashboard.png" alt="Dashboard" >
+<img src="screenshots/Dashboard.png" alt="Dashboard" >
 
 
 ```
