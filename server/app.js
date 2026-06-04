@@ -13,7 +13,7 @@ const errorHandlerMiddleware = require("./middleware/error-handler.js");
 const connectDB = require("./db/connect.js");
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 const requiredEnvVars = [
   "MONGO_URI",
@@ -34,7 +34,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://wholesale-pricing-engine.vercel.app",
-      "https://wholesale-pricing-engine.netlify.app",
+      
     ],
     credentials: true,
   }),
