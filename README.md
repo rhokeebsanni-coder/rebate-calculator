@@ -58,11 +58,9 @@ Capture the following on the main dashboard:
 - Unit price calculations column
 - Navigation/sidebar if applicable
 
-```
+
 ![Dashboard](https://github.com/rhokeebsanni/wholesale-pricing-engine/blob/866263f5016b0dd629bb70bb6dfafb80224860e4/dashboard.png)
 
-
-```
 
 **Tips:**
 - Pre-fill the dashboard with realistic dummy data (e.g. Steel Rods, Aluminum Sheets)
