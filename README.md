@@ -4,7 +4,7 @@ A full-stack wholesale pricing and rebate management application that helps busi
 
 ## 🚀 Live Demo
 
-**Live Application:** [Add your Vercel URL here]
+**Live Application:** https://wholesale-pricing-engine.vercel.app
 
 ---
 
@@ -33,13 +33,8 @@ Capture the following on the login/register pages:
 - Clean, minimal UI with no errors shown
 - Consistent branding across both pages
 
-```
-<img src="screenshots/Login.png" alt="Login" >
-<img src="screenshots/Register.png" alt="Register" >
-
-
-
-```
+![Login](https://github.com/rhokeebsanni/wholesale-pricing-engine/blob/866263f5016b0dd629bb70bb6dfafb80224860e4/login.png)
+![Register](https://github.com/rhokeebsanni/wholesale-pricing-engine/blob/866263f5016b0dd629bb70bb6dfafb80224860e4/Register.png)
 
 **Tips:**
 - Show the login page at rest (no error states)
